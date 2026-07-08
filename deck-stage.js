@@ -622,11 +622,11 @@
       // for presenter-popup thumbnail iframes (up to 9 per view).
       if (this._railEnabled || this.hasAttribute('no-rail')) return;
       this._railEnabled = true;
-      // Per-viewer preference — restored alongside rail width. Default on;
-      // only a stored '0' (from the TweaksPanel toggle) hides it.
-      this._railVisible = true;
+      // Per-viewer preference — restored alongside rail width. Default off;
+      // only a stored '1' (from the TweaksPanel toggle) shows it.
+      this._railVisible = false;
       try {
-        if (localStorage.getItem('deck-stage.railVisible') === '0') this._railVisible = false;
+        if (localStorage.getItem('deck-stage.railVisible') === '1') this._railVisible = true;
       } catch (e) {}
       // Live thumbnail updates: watch the light-DOM slides for content
       // edits and re-clone just the affected thumb(s), debounced. Ignore

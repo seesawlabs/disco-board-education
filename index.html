@@ -1425,8 +1425,9 @@
     try { notes = JSON.parse(tag.textContent || '[]'); } catch (e) { notes = []; }
 
     var OPEN_KEY = 'disco-notes-open';
-    var startOpen = localStorage.getItem(OPEN_KEY);
-    startOpen = startOpen === null ? true : startOpen === '1';
+    // Default closed so the notes drawer doesn't fire on first landing;
+    // only a stored '1' (user previously opened it) starts it open.
+    var startOpen = localStorage.getItem(OPEN_KEY) === '1';
 
     // Panel
     var panel = document.createElement('div');
