@@ -1294,11 +1294,18 @@ body[data-v5="3"] .v5-variant[data-v="3"] { display: grid !important; }
 .buyer-stack { display: flex; flex-direction: column; gap: 26px; }
 .buyer-org { font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 800; color: var(--coral-deep); margin: 0 0 8px; }
 .org-inline { color: var(--ink-3); font-weight: 500; }
-.pd-stack { margin-top: 2px; display: flex; flex-direction: column; gap: 10px; border-top: 1px solid var(--rule-2); padding-top: 16px; }
-.pd-sr { display: flex; flex-direction: column; gap: 5px; }
-.pd-sr-k { font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 800; color: var(--ink-4); }
-.pd-sr-v { font-size: 18px; font-weight: 600; color: var(--ink-2); line-height: 1.35; display: flex; flex-wrap: wrap; align-items: center; gap: 5px 8px; }
-.pd-sr-v .not-in { color: var(--ink-3); font-style: italic; font-weight: 500; }
+/* Video-first persona: elevated "Uses daily" / "Buys" cards */
+.pd-use { display: flex; flex-direction: column; gap: 16px; }
+.pd-card { background: var(--sand); border-radius: 16px; padding: 22px 28px; display: flex; flex-direction: column; gap: 14px; }
+.pd-card-h { display: flex; align-items: center; gap: 14px; }
+.pd-card-k { font-size: 14px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 800; color: var(--ink-4); }
+.pd-card .ptag { font-size: 13px; padding: 4px 13px; }
+.pd-tools { display: flex; flex-wrap: wrap; gap: 10px; }
+.pd-tool { font-size: 18px; font-weight: 700; color: var(--ink); background: #fff; border: 1.5px solid var(--rule-2); border-radius: 100px; padding: 8px 18px; white-space: nowrap; }
+.pd-note { margin: 0; font-size: 16px; font-style: italic; font-weight: 500; color: var(--ink-3); }
+.pd-buy { margin: 0; font-size: 21px; font-weight: 600; color: var(--ink-2); line-height: 1.35; }
+.ptag.champion { background: rgba(0,173,166,0.12); color: var(--teal-deep); }
+.ptag.none { background: rgba(19,34,43,0.06); color: var(--ink-3); }
 .prac-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 26px 40px; }
 
 /* ────────── 2.4 / persona commercial cards ────────── */
@@ -1376,19 +1383,12 @@ body[data-v5="3"] .v5-variant[data-v="3"] { display: grid !important; }
 .persona-detail.v2 .pd-namecard { position: absolute; left: 0; right: 0; bottom: 0; z-index: 1; text-align: left; display: flex; flex-direction: column; gap: 3px; padding: 30px 26px 22px; background: linear-gradient(to top, rgba(11,18,23,.94), rgba(11,18,23,.5) 58%, transparent); }
 .persona-detail.v2 .pd-namecard .pd-name { font-size: 46px; font-weight: 700; letter-spacing: -0.025em; color: #fff; line-height: 1; margin: 0; }
 .persona-detail.v2 .pd-namecard .pd-role { font-size: 18px; font-weight: 500; color: rgba(255,255,255,.85); margin: 0; }
-.persona-detail.v2 .pd-content { display: flex; flex-direction: column; justify-content: space-between; gap: 24px; min-height: 0; padding: 2px 0; }
+.persona-detail.v2 .pd-content { display: flex; flex-direction: column; justify-content: center; gap: 32px; min-height: 0; padding: 2px 0; }
 .persona-detail.v2 .pd-headgroup { display: flex; flex-direction: column; gap: 18px; }
 .persona-detail.v2 .pd-tags-row { display: flex; flex-wrap: wrap; gap: 10px; }
 .persona-detail.v2 .pd-tags-row .pd-tag { font-size: 15px; font-weight: 700; letter-spacing: .02em; color: var(--ink); background: var(--sand); border-radius: 100px; padding: 8px 16px; display: inline-block; }
 .persona-detail.v2 .pd-tags-row .pd-tag::before { display: none; }
-.persona-detail.v2 .pd-quote { font-size: 36px; font-weight: 600; line-height: 1.16; letter-spacing: -0.015em; color: var(--ink); margin: 0; padding-left: 24px; border-left: 5px solid var(--accent); text-wrap: balance; }
-.persona-detail.v2 .pd-sections { display: flex; flex-direction: column; gap: 20px; background: var(--sand); border-radius: 14px; padding: 28px 32px; }
-.persona-detail.v2 .pd-sec.friction { border-top: 1px solid var(--rule-2); padding-top: 20px; }
-.persona-detail.v2 .pd-sec { display: flex; flex-direction: column; gap: 8px; }
-.persona-detail.v2 .pd-sec .pd-h { font-size: 17px; letter-spacing: .16em; text-transform: uppercase; font-weight: 700; color: var(--accent); margin: 0; }
-.persona-detail.v2 .pd-sec.friction .pd-h { color: var(--ink-3); }
-.persona-detail.v2 .pd-sec .pd-p { font-size: 24px; line-height: 1.5; color: var(--ink-2); margin: 0; }
-.persona-detail.v2 .pd-sec .pd-p strong { color: var(--ink); font-weight: 600; }
+.persona-detail.v2 .pd-quote { font-size: 40px; font-weight: 600; line-height: 1.18; letter-spacing: -0.015em; color: var(--ink); margin: 0; padding-left: 26px; border-left: 5px solid var(--accent); text-wrap: balance; }
 /* illustrated portrait variant (no video) */
 .persona-detail.v2 .pd-portrait.illus { display: flex; align-items: center; justify-content: center; cursor: default; background-image: none; }
 .persona-detail.v2 .pd-portrait.illus.teal { background: rgba(0,173,166,.12); }
