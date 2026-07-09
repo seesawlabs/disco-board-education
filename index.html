@@ -434,45 +434,64 @@
       <h2 class="headline" style="font-size:48px;margin-top:30px">The market isn't shrinking. <em>It's shifting.</em></h2>
       <p class="subhead">Litigation technology &amp; services — US, UK, Canada · Kaiser Associates 2026</p>
 
-      <div class="market">
-        <!-- outer container: the whole market, growing -->
-        <div class="mk-frame">
-          <div class="mk-head">
-            <span class="mk-cap">The whole market</span>
-            <span class="mk-flow">
-              <span class="mk-v"><b>$14B</b><small>2025</small></span>
-              <span class="mk-arr">→</span>
-              <span class="mk-v grow"><b>$18B</b><small>2030 · 5% CAGR</small></span>
-            </span>
+      <div class="growth">
+        <div class="gt gt-sig">
+          <div class="gt-head">
+            <span class="gt-tr" aria-hidden="true">▲▲</span>
+            <div class="gt-label">
+              <p class="gt-name">Significant growth</p>
+              <p class="gt-why">AI-led review and AI capabilities outpace the market — a key shift in how customers expect to run eDiscovery.</p>
+            </div>
           </div>
-          <p class="mk-note">Each slice is a segment, sized to its share of the market today.</p>
-          <div class="mstack" role="img" aria-label="The $14 billion market today, split into six segments sized by share, largest to smallest: Hosting and processing, Managed review, Legal research, LSP services, AI capabilities, Unified platforms.">
-            <div class="mseg" style="flex:4.1"><span class="ms-name">Hosting + processing</span></div>
-            <div class="mseg" style="flex:2.8"><span class="ms-name">Managed review</span></div>
-            <div class="mseg" style="flex:2.5"><span class="ms-name">Legal research</span></div>
-            <div class="mseg" style="flex:2.1"><span class="ms-name">LSP services</span></div>
-            <div class="mseg ai" style="flex:1.3"><span class="ms-name">AI capabilities</span></div>
-            <div class="mseg" style="flex:1.2"><span class="ms-name">Unified platforms</span></div>
-          </div>
-          <div class="mkeys">
-            <div class="mkey" style="flex:4.1"><span class="mk-tag steady">Largest today</span></div>
-            <div class="mkey" style="flex:2.8"><span class="mk-tag down">▼ Declining</span></div>
-            <div class="mkey" style="flex:2.5"><span class="mk-tag warn">◆ Disrupted</span></div>
-            <div class="mkey" style="flex:2.1"><span class="mk-tag down">▼ Declining</span></div>
-            <div class="mkey ai" style="flex:1.3"><span class="mk-tag up">▲ Fastest growing</span></div>
-            <div class="mkey" style="flex:1.2"><span class="mk-tag up">▲ Emerging</span></div>
+          <div class="gt-chips">
+            <span class="gchip">AI-led Review</span>
+            <span class="gchip">AI Capabilities</span>
           </div>
         </div>
 
-        <!-- nested pullout: the AI slice, magnified -->
-        <div class="mk-zoom">
-          <p class="zoom-tag">Zoom in ▸ the breakout slice</p>
-          <div class="zoom-flow">
-            <span class="zv"><b>$1.3B</b><small>2025</small></span>
-            <span class="zbar"><span class="zbar-fill"></span></span>
-            <span class="zv grow"><b>$3B</b><small>2030</small></span>
+        <div class="gt gt-mod">
+          <div class="gt-head">
+            <span class="gt-tr" aria-hidden="true">▲</span>
+            <div class="gt-label">
+              <p class="gt-name">Moderate growth</p>
+              <p class="gt-why">Grows with market tailwinds — consistent usage through 2030.</p>
+            </div>
           </div>
-          <p class="zoom-cagr"><b>~18% CAGR</b> — AI capabilities is the fastest-growing segment in the entire market</p>
+          <div class="gt-chips">
+            <span class="gchip">Deposition &amp; Trial Prep</span>
+            <span class="gchip">Collect</span>
+            <span class="gchip">Legal Hold</span>
+            <span class="gchip">Data Operations &amp; Forensics</span>
+            <span class="gchip">Managed Services</span>
+            <span class="gchip">Platform Fees</span>
+            <span class="gchip">Hosting</span>
+          </div>
+        </div>
+
+        <div class="gt gt-sus">
+          <div class="gt-head">
+            <span class="gt-tr" aria-hidden="true">▬</span>
+            <div class="gt-label">
+              <p class="gt-name">Sustained value</p>
+              <p class="gt-why">Holds its value amid greater insourcing trends and market tailwinds.</p>
+            </div>
+          </div>
+          <div class="gt-chips">
+            <span class="gchip">Project Management</span>
+          </div>
+        </div>
+
+        <div class="gt gt-dec">
+          <div class="gt-head">
+            <span class="gt-tr" aria-hidden="true">▼</span>
+            <div class="gt-label">
+              <p class="gt-name">Decreasing value</p>
+              <p class="gt-why">Declines as AI-led review adoption rises — though the ongoing need for human oversight limits the decline.</p>
+            </div>
+          </div>
+          <div class="gt-chips">
+            <span class="gchip">Managed Review</span>
+          </div>
         </div>
       </div>
 
@@ -2005,44 +2024,20 @@
       var sec = document.querySelector('section[data-label="07 The Market"]');
       if (!sec) return;
       clearTimers();
-      var frame = sec.querySelector('.mk-frame');
-      var segs = Array.prototype.slice.call(sec.querySelectorAll('.mbar'));
-      var zoom = sec.querySelector('.mk-zoom');
-      var zfill = sec.querySelector('.zbar-fill');
-      if (frame) { frame.style.transition = 'none'; frame.style.opacity = '0'; frame.style.transform = 'translateY(24px)'; }
-      segs.forEach(function (el) {
+      var tiers = Array.prototype.slice.call(sec.querySelectorAll('.gt'));
+      tiers.forEach(function (el) {
         el.style.transition = 'none';
-        el.style.transformOrigin = 'left center';
-        el.style.transform = 'scaleX(0)';
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(18px)';
       });
-      if (zoom) { zoom.style.transition = 'none'; zoom.style.opacity = '0'; zoom.style.transform = 'translateY(20px)'; }
-      if (zfill) { zfill.style.transition = 'none'; zfill.style.transform = 'scaleX(.35)'; zfill.style.transformOrigin = 'left center'; }
       void sec.offsetWidth;
-      // 1) container frame rises in
-      timers.push(setTimeout(function () {
-        if (!frame) return;
-        frame.style.transition = 'opacity .5s ease, transform .6s cubic-bezier(.2,.8,.3,1)';
-        frame.style.opacity = '1'; frame.style.transform = 'none';
-      }, 150));
-      // 2) composition bar grows segment by segment
-      segs.forEach(function (el, i) {
+      tiers.forEach(function (el, i) {
         timers.push(setTimeout(function () {
-          el.style.transition = 'transform .5s cubic-bezier(.2,.8,.3,1)';
+          el.style.transition = 'opacity .45s ease, transform .55s cubic-bezier(.2,.8,.3,1)';
+          el.style.opacity = '1';
           el.style.transform = 'none';
-        }, 550 + i * 160));
+        }, 150 + i * 140));
       });
-      // 3) nested zoom pulls out, then the AI slice grows to $3B
-      var zStart = 550 + segs.length * 160 + 250;
-      timers.push(setTimeout(function () {
-        if (!zoom) return;
-        zoom.style.transition = 'opacity .5s ease, transform .6s cubic-bezier(.34,1.3,.5,1)';
-        zoom.style.opacity = '1'; zoom.style.transform = 'none';
-      }, zStart));
-      timers.push(setTimeout(function () {
-        if (!zfill) return;
-        zfill.style.transition = 'transform 1s cubic-bezier(.2,.8,.3,1)';
-        zfill.style.transform = 'none';
-      }, zStart + 350));
     }
     deck.addEventListener('slidechange', function () {
       clearTimers();
