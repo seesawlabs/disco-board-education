@@ -1201,19 +1201,17 @@ body[data-v5="3"] .v5-variant[data-v="3"] { display: grid !important; }
 /* Slide 7 — the whole $14B drawn as one bar, sliced into its six segments.
    Each .mseg / .mkey gets flex-grow = its $B value (inline), so slice
    widths are proportional to dollars and the labels line up beneath. */
-.mstack { display: flex; gap: 3px; height: 62px; margin-top: 6px; }
-.mseg { flex: 1 1 0; min-width: 0; box-sizing: border-box; background: var(--teal); border-radius: 8px; display: flex; align-items: center; justify-content: center; padding: 0 8px; }
-.mseg .ms-val { color: #fff; font-size: 20px; font-weight: 800; letter-spacing: -0.01em; white-space: nowrap; }
+.mstack { display: flex; gap: 3px; height: 74px; margin-top: 6px; }
+.mseg { flex: 1 1 0; min-width: 0; box-sizing: border-box; background: var(--teal); border-radius: 8px; display: flex; align-items: center; justify-content: center; padding: 0 10px; }
+.mseg .ms-name { color: #fff; font-size: 16px; font-weight: 700; line-height: 1.15; text-align: center; }
 .mseg.lite { background: #57C6C0; }
-.mseg.lite .ms-val { color: var(--ink); }
+.mseg.lite .ms-name { color: var(--ink); }
 .mseg.ai { background: var(--coral); box-shadow: 0 0 0 3px rgba(255,88,89,.20); position: relative; z-index: 1; }
 
-.mkeys { display: flex; gap: 3px; margin-top: 12px; }
-.mkey { flex: 1 1 0; min-width: 0; box-sizing: border-box; padding: 9px 8px 0; border-top: 3px solid var(--teal); display: flex; flex-direction: column; gap: 5px; }
+.mkeys { display: flex; gap: 3px; margin-top: 10px; }
+.mkey { flex: 1 1 0; min-width: 0; box-sizing: border-box; padding: 9px 8px 0; border-top: 3px solid var(--teal); text-align: center; }
 .mkey.lite { border-top-color: #57C6C0; }
 .mkey.ai { border-top-color: var(--coral); }
-.mk-name { font-size: 14px; font-weight: 700; color: var(--ink-2); line-height: 1.2; }
-.mkey.ai .mk-name { color: var(--coral-deep); }
 .mk-tag { font-size: 12px; font-weight: 800; letter-spacing: 0.02em; line-height: 1.15; }
 .mk-tag.steady { color: var(--ink-3); }
 .mk-tag.down { color: var(--ink-4); }
