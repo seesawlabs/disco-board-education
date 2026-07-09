@@ -1400,7 +1400,9 @@ body[data-v5="3"] .v5-variant[data-v="3"] { display: grid !important; }
 .persona-detail.v2 .pd-portrait { position: relative; display: block; width: 100%; border: 0; padding: 0; margin: 0; border-radius: 18px; overflow: hidden; cursor: pointer; background-color: var(--pale); background-size: cover; background-position: center 18%; background-repeat: no-repeat; box-shadow: 0 22px 55px rgba(19,34,43,.20); transition: transform .15s ease, box-shadow .15s ease; }
 .persona-detail.v2 .pd-portrait:hover { transform: translateY(-3px); box-shadow: 0 28px 65px rgba(19,34,43,.28); }
 .persona-detail.v2 .pd-portrait::after { content: ""; position: absolute; inset: 0; border-radius: 18px; box-shadow: inset 0 0 0 4px var(--accent); pointer-events: none; }
-.persona-detail.v2 .pd-portrait .av-play { position: absolute; top: 42%; left: 50%; transform: translate(-50%,-50%); }
+.persona-detail.v2 .pd-portrait .av-play { position: absolute; top: 42%; left: 50%; transform: translate(-50%,-50%); z-index: 1; }
+/* Illustration portrait that also plays an intro video on click */
+.persona-detail.v2 .pd-portrait.illus.av-video { cursor: pointer; }
 .persona-detail.v2 .pd-namecard { position: absolute; left: 0; right: 0; bottom: 0; z-index: 1; text-align: left; display: flex; flex-direction: column; gap: 3px; padding: 30px 26px 22px; background: linear-gradient(to top, rgba(11,18,23,.94), rgba(11,18,23,.5) 58%, transparent); }
 .persona-detail.v2 .pd-namecard .pd-name { font-size: 46px; font-weight: 700; letter-spacing: -0.025em; color: #fff; line-height: 1; margin: 0; }
 .persona-detail.v2 .pd-namecard .pd-role { font-size: 18px; font-weight: 500; color: rgba(255,255,255,.85); margin: 0; }
