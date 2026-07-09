@@ -1515,7 +1515,7 @@ body[data-v5="3"] .v5-variant[data-v="3"] { display: grid !important; }
 
 /* ────────── 4.1 Competitive heat-map ────────── */
 .heat { margin-top: 28px; display: flex; flex-direction: column; gap: 6px; }
-.heat-head, .heat-row { display: grid; grid-template-columns: 280px repeat(8, 1fr); gap: 6px; align-items: center; }
+.heat-head, .heat-row { display: grid; grid-template-columns: 280px repeat(8, 1fr); gap: 6px; align-items: center; padding: 0 8px; box-sizing: border-box; }
 .heat-head .hh { font-size: 14px; font-weight: 700; color: var(--ink-3); text-align: center; letter-spacing: 0.01em; }
 .hr-name { font-size: 19px; font-weight: 700; color: var(--ink); line-height: 1.1; padding-right: 14px; }
 .hr-name span { display: block; font-size: 13px; font-weight: 500; color: var(--ink-3); letter-spacing: 0.01em; margin-top: 3px; }
