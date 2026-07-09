@@ -1127,7 +1127,7 @@ body[data-v5="3"] .v5-variant[data-v="3"] { display: grid !important; }
 /* Fade DISCO products to white across phases 5-8 (dispositive → post-trial),
    signalling the product weakens in the later phases. Overlay sits above the
    bars but below the phase headers (starts at row 2). */
-.dm-fade { grid-row: 2 / 10; grid-column: 5 / 9; z-index: 3; pointer-events: none; background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.55) 52%, rgba(255,255,255,0.9) 100%); }
+.dm-fade { grid-row: 2 / 10; grid-column: 4 / 9; z-index: 3; pointer-events: none; background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0) 16%, rgba(255,255,255,0.6) 46%, rgba(255,255,255,0.97) 92%); }
 .tool-col { display: flex; flex-direction: column; gap: 7px; }
 .tool-col .tc-head {
   font-size: 18px; font-weight: 700; color: var(--ink); margin: 0 0 4px;
