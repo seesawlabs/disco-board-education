@@ -1292,7 +1292,10 @@
       } else if (key === 'Home') {
         this._go(0, 'keyboard');
       } else if (key === 'End') {
-        this._go(this._slides.length - 1, 'keyboard');
+        // Land on the last *non-skipped* slide, not a data-deck-skip one.
+        let end = this._slides.length - 1;
+        while (end > 0 && this._slides[end].hasAttribute('data-deck-skip')) end--;
+        this._go(end, 'keyboard');
       } else if (key === 'r' || key === 'R') {
         this._go(0, 'keyboard');
       } else if (/^[0-9]$/.test(key)) {
