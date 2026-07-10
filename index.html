@@ -1652,17 +1652,47 @@
         else { endCard.style.display = 'flex'; }
         if (broadcast && bc) bc.postMessage({ type: 'goto', index: idx, from: 'presenter' });
       }
-      function go(n, broadcast) { idx = n; paint(broadcast); }
+      function go(n, broadcast) { idx = n; pstep = 0; paint(broadcast); }
 
-      wrap.querySelector('#pv-next').addEventListener('click', function () { if (idx < total - 1) go(idx + 1, true); });
-      wrap.querySelector('#pv-prev').addEventListener('click', function () { if (idx > 0) go(idx - 1, true); });
+      /* Slide 4 (Eight Phases) reveals its 8 cards one press at a time.
+         On that slide, Next/Prev step the reveal — mirrored to the audience
+         window over BroadcastChannel and into this console's preview iframe —
+         until all 8 are shown; only then does Next move on to the next slide. */
+      var PIDX = (function () {
+        var secs = document.querySelectorAll('deck-stage > section');
+        for (var i = 0; i < secs.length; i++) {
+          if (secs[i].getAttribute('data-label') === '04 Eight Phases') return i;
+        }
+        return -1;
+      })();
+      var PHASE_STEPS = 8;
+      var pstep = 0;
+      function pushPhase() {
+        try { curIf.contentWindow.postMessage({ type: 'disco-phasestep', count: pstep }, '*'); } catch (e) {}
+        if (bc) bc.postMessage({ type: 'phasestep', count: pstep, from: 'presenter' });
+      }
+      function nextAction() {
+        if (idx === PIDX && pstep < PHASE_STEPS) { pstep++; pushPhase(); return; }
+        if (idx < total - 1) go(idx + 1, true);
+      }
+      function prevAction() {
+        if (idx === PIDX && pstep > 0) { pstep--; pushPhase(); return; }
+        if (idx > 0) go(idx - 1, true);
+      }
+
+      wrap.querySelector('#pv-next').addEventListener('click', nextAction);
+      wrap.querySelector('#pv-prev').addEventListener('click', prevAction);
       window.addEventListener('keydown', function (e) {
-        if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); if (idx < total - 1) go(idx + 1, true); }
-        else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); if (idx > 0) go(idx - 1, true); }
+        if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); nextAction(); }
+        else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); prevAction(); }
       });
       if (bc) bc.onmessage = function (ev) {
         var m = ev.data || {};
         if (m.type === 'goto' && m.from !== 'presenter' && typeof m.index === 'number') go(m.index, false);
+        if (m.type === 'phasestep' && m.from === 'audience' && typeof m.count === 'number') {
+          pstep = m.count;
+          try { curIf.contentWindow.postMessage({ type: 'disco-phasestep', count: pstep }, '*'); } catch (e) {}
+        }
         if (m.type === 'whereareyou') bc.postMessage({ type: 'goto', index: idx, from: 'presenter' });
       };
 
@@ -1815,70 +1845,87 @@
   else init();
 })();
 
-/* ── Eight Phases slide: flip each phase card in, one every 2s ───────────── */
+/* ── Eight Phases slide: reveal each phase on command (speaker-controlled) ──
+   Each forward press flips in the next phase card; after the 8th, the loop
+   note appears and the next press advances to slide 5. Back-steps un-reveal.
+   Works with a clicker/keyboard in the live window AND with the dual-window
+   Presenter View: the presenter console sends a "phasestep" over the shared
+   BroadcastChannel (to the audience window) and mirrors it into its own
+   preview iframe via postMessage. See the presenter console below. */
 (function () {
+  var params = new URLSearchParams(location.search);
+  if (params.has('presenter')) return; // the console drives its preview iframe, not this deck
+  var isEmbed = params.has('embed');
+  var bc = (!isEmbed && 'BroadcastChannel' in window) ? new BroadcastChannel('disco-deck-sync') : null;
+
   function init() {
     var deck = document.querySelector('deck-stage');
     if (!deck) return;
-    var STEP = 2000; // ms between each phase flipping in
-    var timers = [];
-    function clearTimers() { timers.forEach(clearTimeout); timers = []; }
-    function isPhases() {
+    var STEPS = 8; // one reveal per phase card
+
+    function sec() { return document.querySelector('section[data-label="04 Eight Phases"]'); }
+    function isActive() {
       var a = document.querySelector('deck-stage > section[data-deck-active]');
       return !!(a && a.getAttribute('data-label') === '04 Eight Phases');
     }
-    function play() {
-      var sec = document.querySelector('section[data-label="04 Eight Phases"]');
-      if (!sec) return;
-      clearTimers();
 
-      // remove the legacy click-to-reveal button if a prior build left one
-      var oldBtn = sec.querySelector('.pf-reveal');
-      if (oldBtn && oldBtn.parentNode) oldBtn.parentNode.removeChild(oldBtn);
+    var step = 0;
 
-      var cards = Array.prototype.slice.call(sec.querySelectorAll('.pf-card'));
-      var loop = sec.querySelector('.pf-loop');
-      var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-      // pre-flip state: edge-on and invisible, ready to flip toward the viewer
-      cards.forEach(function (el) {
-        el.style.transition = 'none';
-        el.style.opacity = '0';
+    function applyStep(n, animate) {
+      var s = sec(); if (!s) return;
+      var cards = Array.prototype.slice.call(s.querySelectorAll('.pf-card'));
+      var loop = s.querySelector('.pf-loop');
+      if (!cards.length) return;
+      n = Math.max(0, Math.min(STEPS, n));
+      step = n;
+      cards.forEach(function (el, i) {
+        var show = i < n;
+        el.style.transition = animate ? 'opacity .45s ease, transform .6s cubic-bezier(.2,.75,.25,1)' : 'none';
         el.style.transformOrigin = '50% 50%';
         el.style.backfaceVisibility = 'hidden';
-        el.style.transform = 'perspective(1400px) rotateY(90deg)';
+        el.style.opacity = show ? '1' : '0';
+        el.style.transform = show ? 'perspective(1400px) rotateY(0deg)' : 'perspective(1400px) rotateY(90deg)';
       });
-      if (loop) { loop.style.transition = 'none'; loop.style.opacity = '0'; }
-      void sec.offsetWidth;
-
-      // reduced-motion: reveal everything at once, no flip
-      if (reduce) {
-        cards.forEach(function (el) { el.style.transition = 'none'; el.style.opacity = '1'; el.style.transform = 'none'; });
-        if (loop) loop.style.opacity = '1';
-        return;
-      }
-
-      // flip each card in, 2s apart
-      cards.forEach(function (el, i) {
-        timers.push(setTimeout(function () {
-          el.style.transition = 'opacity .5s ease, transform .7s cubic-bezier(.2,.75,.25,1)';
-          el.style.opacity = '1';
-          el.style.transform = 'perspective(1400px) rotateY(0deg)';
-        }, i * STEP));
-      });
-      // once the last card has flipped, fade in the loop-back note
       if (loop) {
-        timers.push(setTimeout(function () {
-          loop.style.transition = 'opacity .6s ease';
-          loop.style.opacity = '1';
-        }, cards.length * STEP));
+        loop.style.transition = animate ? 'opacity .5s ease' : 'none';
+        loop.style.opacity = (n >= STEPS) ? '1' : '0';
       }
     }
+
+    // Arrive on the slide with everything hidden — the speaker reveals each.
     deck.addEventListener('slidechange', function () {
-      clearTimers();
-      if (isPhases()) setTimeout(play, 60);
+      if (isActive()) { var s = sec(); if (s) void s.offsetWidth; applyStep(0, false); }
     });
-    if (isPhases()) setTimeout(play, 400);
+    if (isActive()) setTimeout(function () { applyStep(0, false); }, 60);
+
+    // Remote reveal: BroadcastChannel in the audience window; postMessage in embed previews.
+    if (bc) bc.onmessage = function (ev) {
+      var m = ev.data || {};
+      if (m && m.type === 'phasestep' && typeof m.count === 'number') applyStep(m.count, true);
+    };
+    if (isEmbed) window.addEventListener('message', function (ev) {
+      var m = ev.data || {};
+      if (m && m.type === 'disco-phasestep' && typeof m.count === 'number') applyStep(m.count, true);
+    });
+
+    // Direct clicker/keyboard control (live/audience window only; not embed previews).
+    if (!isEmbed) {
+      window.addEventListener('keydown', function (e) {
+        if (!isActive() || e.metaKey || e.ctrlKey || e.altKey) return;
+        var fwd = (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ' || e.key === 'Spacebar');
+        var back = (e.key === 'ArrowLeft' || e.key === 'PageUp');
+        if (fwd && step < STEPS) {
+          e.preventDefault(); e.stopImmediatePropagation();
+          applyStep(step + 1, true);
+          if (bc) bc.postMessage({ type: 'phasestep', count: step, from: 'audience' });
+        } else if (back && step > 0) {
+          e.preventDefault(); e.stopImmediatePropagation();
+          applyStep(step - 1, true);
+          if (bc) bc.postMessage({ type: 'phasestep', count: step, from: 'audience' });
+        }
+        // fwd at the last step, or back at step 0, falls through so the deck changes slide
+      }, true); // capture phase: run before deck-stage's own navigation handler
+    }
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();
