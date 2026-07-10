@@ -1191,19 +1191,19 @@ body[data-v5="3"] .v5-variant[data-v="3"] { display: grid !important; }
 
 /* ────────── 1.4 Market — growth vs. decline by trajectory ────────── */
 .growth { display: flex; flex-direction: column; gap: 12px; margin-top: 28px; }
-.gt { display: grid; grid-template-columns: 340px 1fr; gap: 24px; align-items: center; padding: 20px 26px; border-radius: 14px; border-left: 6px solid var(--gc); background: var(--gbg); }
+.gt { display: grid; grid-template-columns: 380px 1fr; gap: 24px; align-items: center; padding: 22px 28px; border-radius: 14px; border-left: 6px solid var(--gc); background: var(--gbg); }
 .gt-head { display: flex; align-items: flex-start; gap: 16px; }
-.gt-tr { font-size: 22px; font-weight: 800; color: var(--gc); line-height: 1.1; flex: 0 0 auto; min-width: 36px; letter-spacing: -1px; }
+.gt-tr { font-size: 26px; font-weight: 800; color: var(--gc); line-height: 1.1; flex: 0 0 auto; min-width: 40px; letter-spacing: -1px; }
 .gt-label { min-width: 0; }
-.gt-name { font-size: 21px; font-weight: 800; color: var(--ink); margin: 0; letter-spacing: -0.01em; }
-.gt-why { font-size: 14px; font-weight: 500; color: var(--ink-3); line-height: 1.38; margin: 5px 0 0; }
+.gt-name { font-size: 25px; font-weight: 800; color: var(--ink); margin: 0; letter-spacing: -0.01em; }
+.gt-why { font-size: 17px; font-weight: 500; color: var(--ink-3); line-height: 1.4; margin: 6px 0 0; }
 .gt-right { display: flex; flex-direction: column; gap: 12px; }
-.gt-chips { display: flex; flex-wrap: wrap; gap: 9px; }
-.gchip { font-size: 16px; font-weight: 700; padding: 8px 15px; border-radius: 100px; background: var(--chbg); color: var(--chfg); border: 1.5px solid var(--chbd); white-space: nowrap; }
-.gt-stat { margin: 0; font-size: 16px; font-weight: 600; color: var(--ink-2); letter-spacing: -0.01em; }
-.gt-stat b { font-size: 19px; font-weight: 800; color: var(--teal-deep); }
+.gt-chips { display: flex; flex-wrap: wrap; gap: 10px; }
+.gchip { font-size: 18px; font-weight: 700; padding: 9px 17px; border-radius: 100px; background: var(--chbg); color: var(--chfg); border: 1.5px solid var(--chbd); white-space: nowrap; }
+.gt-stat { margin: 0; font-size: 19px; font-weight: 600; color: var(--ink-2); letter-spacing: -0.01em; }
+.gt-stat b { font-size: 23px; font-weight: 800; color: var(--teal-deep); }
 .gt-arw { color: var(--teal); font-weight: 700; margin: 0 3px; }
-.gt-cagr { display: inline-block; margin-left: 10px; font-size: 12px; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; color: var(--teal-deep); background: rgba(0,173,166,0.14); padding: 3px 10px; border-radius: 100px; vertical-align: 1px; }
+.gt-cagr { display: inline-block; margin-left: 10px; font-size: 14px; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; color: var(--teal-deep); background: rgba(0,173,166,0.14); padding: 3px 11px; border-radius: 100px; vertical-align: 1px; }
 .gt-sig { --gc: var(--teal-deep); --gbg: rgba(0,173,166,0.14); }
 .gt-sig .gchip { --chbg: var(--teal); --chfg: #fff; --chbd: var(--teal); }
 .gt-mod { --gc: var(--teal); --gbg: rgba(0,173,166,0.07); }
