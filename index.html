@@ -11,8 +11,112 @@
 <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>deck-stage:not(:defined){visibility:hidden}</style>
 <link rel="stylesheet" href="styles.css">
+<style>
+  /* ── Password gate ─────────────────────────────────────────────────── */
+  html:not(.deck-unlocked) { overflow: hidden; }
+  html.deck-unlocked #deck-gate { display: none; }
+  #deck-gate {
+    position: fixed; inset: 0; z-index: 2147483647; display: flex;
+    align-items: center; justify-content: center; padding: 24px;
+    background: #0B1217;
+    font-family: 'Source Sans 3', system-ui, -apple-system, Segoe UI, sans-serif;
+  }
+  #deck-gate .dg-card { width: min(92vw, 420px); display: flex; flex-direction: column; align-items: center; text-align: center; }
+  #deck-gate .dg-logo { width: 230px; max-width: 72%; height: auto; margin-bottom: 36px; }
+  #deck-gate h1 { margin: 0 0 6px; font-size: 22px; font-weight: 700; color: #fff; letter-spacing: -0.01em; }
+  #deck-gate p  { margin: 0 0 26px; font-size: 15px; color: #8A949B; font-weight: 500; letter-spacing: .02em; }
+  #deck-gate form { width: 100%; display: flex; flex-direction: column; gap: 12px; }
+  #deck-gate input {
+    width: 100%; box-sizing: border-box; padding: 15px 18px; border-radius: 12px;
+    border: 1px solid rgba(255,255,255,.16); background: rgba(255,255,255,.06); color: #fff;
+    font: inherit; font-size: 17px; text-align: center; letter-spacing: .02em; outline: none;
+    transition: border-color .15s, background .15s;
+  }
+  #deck-gate input:focus { border-color: #00ADA6; background: rgba(255,255,255,.1); }
+  #deck-gate button {
+    width: 100%; padding: 15px 18px; border: 0; border-radius: 12px; background: #FF5859; color: #fff;
+    font: inherit; font-size: 17px; font-weight: 700; cursor: pointer; transition: background .15s;
+  }
+  #deck-gate button:hover { background: #e64a4b; }
+  #deck-gate .dg-err { min-height: 18px; font-size: 14px; font-weight: 600; color: #FF5859; letter-spacing: .02em; visibility: hidden; }
+  #deck-gate .dg-err.show { visibility: visible; }
+  @keyframes dg-shake { 10%,90%{transform:translateX(-2px)} 30%,70%{transform:translateX(4px)} 50%{transform:translateX(-7px)} }
+  #deck-gate .dg-card.shake { animation: dg-shake .4s; }
+  @media print { #deck-gate { display: none !important; } }
+</style>
+<script>
+  /* Set the unlock class before first paint so authed sessions and embed
+     preview iframes never flash the gate. */
+  (function () {
+    try {
+      var q = new URLSearchParams(location.search);
+      if (q.has('embed') || sessionStorage.getItem('disco-deck-auth') === '1')
+        document.documentElement.classList.add('deck-unlocked');
+    } catch (e) {}
+  })();
+</script>
 </head>
 <body>
+
+<div id="deck-gate" data-noncommentable>
+  <div class="dg-card">
+    <img class="dg-logo" src="assets/disco-logo-light.svg" alt="DISCO">
+    <h1>Litigation World · Board Education</h1>
+    <p>This deck is private. Enter the password to continue.</p>
+    <form id="dg-form" autocomplete="off">
+      <input id="dg-input" type="password" placeholder="Password" aria-label="Password" autocomplete="current-password" autofocus>
+      <button type="submit">Unlock</button>
+      <div class="dg-err" id="dg-err">Incorrect password — please try again.</div>
+    </form>
+  </div>
+</div>
+<script>
+/* ── Password gate: soft, client-side deterrent (see note in repo) ──────────
+   Verifies a SHA-256 hash of the password so the plaintext isn't in source.
+   Unlock is remembered for the browser session (sessionStorage). */
+(function () {
+  var GATE = document.getElementById('deck-gate');
+  if (!GATE) return;
+  if (document.documentElement.classList.contains('deck-unlocked')) return; // authed or embed
+  var HASH = 'f65d98c3366eb1160f834b4ce9046166ef4cddcaf4a10f5fc86d514f8ff3c545';
+  var form = document.getElementById('dg-form');
+  var input = document.getElementById('dg-input');
+  var err = document.getElementById('dg-err');
+  var card = GATE.querySelector('.dg-card');
+
+  setTimeout(function () { try { input.focus(); } catch (e) {} }, 40);
+  // keep typing from reaching the deck's keyboard navigation behind the gate
+  input.addEventListener('keydown', function (e) { e.stopPropagation(); });
+  input.addEventListener('input', function () { err.classList.remove('show'); });
+
+  function fail() {
+    err.classList.add('show');
+    card.classList.remove('shake'); void card.offsetWidth; card.classList.add('shake');
+    try { input.select(); } catch (e) {}
+  }
+  function unlock() {
+    try { sessionStorage.setItem('disco-deck-auth', '1'); } catch (e) {}
+    document.documentElement.classList.add('deck-unlocked');
+  }
+  function sha256hex(s) {
+    return crypto.subtle.digest('SHA-256', new TextEncoder().encode(s)).then(function (buf) {
+      return Array.prototype.map.call(new Uint8Array(buf), function (b) {
+        return b.toString(16).padStart(2, '0');
+      }).join('');
+    });
+  }
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var val = input.value || '';
+    if (!val) { fail(); return; }
+    if (window.crypto && crypto.subtle) {
+      sha256hex(val).then(function (h) { if (h === HASH) unlock(); else fail(); }).catch(fail);
+    } else {
+      fail(); // hashing needs a secure context (https) — production is https
+    }
+  });
+})();
+</script>
 
 <template id="__bundler_thumbnail" data-bg-color="#13222B">
   <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
@@ -1572,7 +1676,7 @@
       wrap.id = 'pv-console';
       wrap.innerHTML =
         '<style>' +
-        '#pv-console{position:fixed;inset:0;z-index:2147483647;background:#0B1217;color:#fff;' +
+        '#pv-console{position:fixed;inset:0;z-index:2147483646;background:#0B1217;color:#fff;' +
           "font-family:'Source Sans 3',system-ui,-apple-system,Segoe UI,sans-serif;display:flex;flex-direction:column;}" +
         '#pv-top{display:flex;align-items:center;justify-content:space-between;padding:14px 26px;border-bottom:1px solid rgba(255,255,255,.1);flex:0 0 auto;}' +
         '#pv-top .pv-ttl{font-size:13px;letter-spacing:.18em;text-transform:uppercase;font-weight:800;color:#00ADA6;}' +
