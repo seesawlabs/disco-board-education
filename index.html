@@ -1817,11 +1817,12 @@
   else init();
 })();
 
-/* ── Eight Phases slide: fly each phase card in one at a time ─────────────── */
+/* ── Eight Phases slide: flip each phase card in, one every 2s ───────────── */
 (function () {
   function init() {
     var deck = document.querySelector('deck-stage');
     if (!deck) return;
+    var STEP = 2000; // ms between each phase flipping in
     var timers = [];
     function clearTimers() { timers.forEach(clearTimeout); timers = []; }
     function isPhases() {
@@ -1831,61 +1832,52 @@
     function play() {
       var sec = document.querySelector('section[data-label="04 Eight Phases"]');
       if (!sec) return;
+      clearTimers();
+
+      // remove the legacy click-to-reveal button if a prior build left one
+      var oldBtn = sec.querySelector('.pf-reveal');
+      if (oldBtn && oldBtn.parentNode) oldBtn.parentNode.removeChild(oldBtn);
+
       var cards = Array.prototype.slice.call(sec.querySelectorAll('.pf-card'));
       var loop = sec.querySelector('.pf-loop');
-      var stepped = 0; // how many cards revealed so far
+      var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-      function hideAll() {
-        if (loop) { loop.style.transition = 'none'; loop.style.opacity = '0'; }
-        cards.forEach(function (el) {
-          el.style.transition = 'none';
-          el.style.opacity = '0';
-          el.style.transform = 'translateX(-48px)';
-        });
-        void sec.offsetWidth;
-      }
-      function revealCard(el) {
-        el.style.transition = 'opacity .45s ease, transform .55s cubic-bezier(.2,.75,.2,1)';
-        el.style.opacity = '1';
-        el.style.transform = 'none';
-      }
-      function updateBtn() {
-        if (!btn) return;
-        var done = stepped >= cards.length && (!loop || loop.style.opacity === '1');
-        btn.style.display = done ? 'none' : 'flex';
-      }
-      function advance() {
-        if (stepped < cards.length) { revealCard(cards[stepped]); stepped++; }
-        else if (loop && loop.style.opacity !== '1') { loop.style.transition = 'opacity .6s ease'; loop.style.opacity = '1'; }
-        updateBtn();
+      // pre-flip state: edge-on and invisible, ready to flip toward the viewer
+      cards.forEach(function (el) {
+        el.style.transition = 'none';
+        el.style.opacity = '0';
+        el.style.transformOrigin = '50% 50%';
+        el.style.backfaceVisibility = 'hidden';
+        el.style.transform = 'perspective(1400px) rotateY(90deg)';
+      });
+      if (loop) { loop.style.transition = 'none'; loop.style.opacity = '0'; }
+      void sec.offsetWidth;
+
+      // reduced-motion: reveal everything at once, no flip
+      if (reduce) {
+        cards.forEach(function (el) { el.style.transition = 'none'; el.style.opacity = '1'; el.style.transform = 'none'; });
+        if (loop) loop.style.opacity = '1';
+        return;
       }
 
-      // build the control button once, persist on the section
-      var btn = sec.querySelector('.pf-reveal');
-      if (!btn) {
-        btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = 'pf-reveal';
-        btn.setAttribute('data-noncommentable', '');
-        btn.setAttribute('aria-label', 'Reveal next phase');
-        btn.innerHTML = '<svg width="20" height="20" viewBox="0 0 20 20" fill="#fff" aria-hidden="true"><path d="M5 3.5v13l11-6.5z"/></svg>';
-        btn.style.cssText = [
-          'position:absolute', 'right:64px', 'top:150px', 'z-index:30',
-          'appearance:none', 'border:0', 'border-radius:50%', 'cursor:pointer',
-          'width:52px', 'height:52px', 'display:flex', 'align-items:center', 'justify-content:center',
-          'background:#FF5859', 'box-shadow:0 6px 18px rgba(255,88,89,.32)',
-          'transition:transform .12s ease, background .15s ease'
-        ].join(';');
-        btn.addEventListener('mouseenter', function () { btn.style.transform = 'scale(1.08)'; });
-        btn.addEventListener('mouseleave', function () { btn.style.transform = 'none'; });
-        sec.querySelector('.frame').appendChild(btn);
+      // flip each card in, 2s apart
+      cards.forEach(function (el, i) {
+        timers.push(setTimeout(function () {
+          el.style.transition = 'opacity .5s ease, transform .7s cubic-bezier(.2,.75,.25,1)';
+          el.style.opacity = '1';
+          el.style.transform = 'perspective(1400px) rotateY(0deg)';
+        }, i * STEP));
+      });
+      // once the last card has flipped, fade in the loop-back note
+      if (loop) {
+        timers.push(setTimeout(function () {
+          loop.style.transition = 'opacity .6s ease';
+          loop.style.opacity = '1';
+        }, cards.length * STEP));
       }
-      btn.onclick = function (e) { e.stopPropagation(); advance(); };
-
-      hideAll();
-      updateBtn();
     }
     deck.addEventListener('slidechange', function () {
+      clearTimers();
       if (isPhases()) setTimeout(play, 60);
     });
     if (isPhases()) setTimeout(play, 400);
