@@ -1044,7 +1044,10 @@
         slide.setAttribute('data-deck-slide', String(i));
       });
 
-      if (this._totalEl) this._totalEl.textContent = String(this._slides.length || 1);
+      if (this._totalEl) {
+        const shown = this._slides.filter((s) => !s.hasAttribute('data-deck-skip')).length;
+        this._totalEl.textContent = String(shown || 1);
+      }
       if (this._index >= this._slides.length) this._index = Math.max(0, this._slides.length - 1);
       this._markLastVisible();
       this._renderRail();
