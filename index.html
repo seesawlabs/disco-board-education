@@ -1702,6 +1702,8 @@
         '#pv-nav button{appearance:none;border:0;border-radius:10px;background:#1B2C36;color:#fff;font:inherit;font-size:17px;font-weight:700;padding:14px 22px;cursor:pointer;transition:background .15s;}' +
         '#pv-nav button:hover{background:#26404E;}' +
         '#pv-nav .pv-primary{background:#00ADA6;}#pv-nav .pv-primary:hover{background:#029b95;}' +
+        '#pv-nav #pv-video{background:#FF5859;}#pv-nav #pv-video:hover{background:#e64a4b;}' +
+        '#pv-nav #pv-video.playing{background:#1B2C36;box-shadow:inset 0 0 0 1.5px #FF5859;}#pv-nav #pv-video.playing:hover{background:#26404E;}' +
         '#pv-nav .pv-lbl{margin-left:auto;font-size:19px;font-weight:700;color:#fff;}' +
         '#pv-nav .pv-lbl small{display:block;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#8A949B;font-weight:700;}' +
         '#pv-right{display:flex;flex-direction:column;gap:14px;min-height:0;}' +
@@ -1722,6 +1724,7 @@
             '<div id="pv-nav">' +
               '<button id="pv-prev">‹ Prev</button>' +
               '<button class="pv-primary" id="pv-next">Next ›</button>' +
+              '<button id="pv-video" style="display:none">▶ Play video</button>' +
               '<span class="pv-lbl"><small>Now showing</small><span id="pv-curlbl"></span></span>' +
             '</div>' +
           '</div>' +
@@ -1763,9 +1766,10 @@
         wrap.querySelector('#pv-notes').scrollTop = 0;
         if (idx + 1 <= total - 1) { endCard.style.display = 'none'; setNested(nextIf, idx + 1); }
         else { endCard.style.display = 'flex'; }
+        setVideoBtn();
         if (broadcast && bc) bc.postMessage({ type: 'goto', index: idx, from: 'presenter' });
       }
-      function go(n, broadcast) { idx = n; pstep = 0; paint(broadcast); }
+      function go(n, broadcast) { idx = n; pstep = 0; vplaying = false; paint(broadcast); }
 
       /* Slide 4 (Eight Phases) reveals its 8 cards one press at a time.
          On that slide, Next/Prev step the reveal — mirrored to the audience
@@ -1793,11 +1797,53 @@
         if (idx > 0) go(idx - 1, true);
       }
 
+      /* Persona-video slides get a Play/Stop control that fires the video on
+         the audience screen (with sound) and mirrors it muted in the preview. */
+      var VIDEO = (function () {
+        var map = {}, secs = document.querySelectorAll('deck-stage > section');
+        for (var i = 0; i < secs.length; i++) {
+          if (secs[i].querySelector('.pv-overlay'))
+            map[i] = (secs[i].getAttribute('data-label') || '').replace(/^\d+\s*/, '');
+        }
+        return map;
+      })();
+      var vplaying = false;
+      var videoBtn = wrap.querySelector('#pv-video');
+      function setVideoBtn() {
+        if (!videoBtn) return;
+        if (Object.prototype.hasOwnProperty.call(VIDEO, idx)) {
+          videoBtn.style.display = '';
+          videoBtn.textContent = vplaying ? '■ Stop video' : ('▶ Play ' + VIDEO[idx] + '’s video');
+          videoBtn.classList.toggle('playing', vplaying);
+        } else {
+          videoBtn.style.display = 'none';
+          videoBtn.classList.remove('playing');
+        }
+      }
+      function playVideo() {
+        vplaying = true;
+        if (bc) bc.postMessage({ type: 'video', action: 'play', index: idx, from: 'presenter' });
+        try { curIf.contentWindow.postMessage({ type: 'disco-video', action: 'play', index: idx }, '*'); } catch (e) {}
+        setVideoBtn();
+      }
+      function stopVideo() {
+        vplaying = false;
+        if (bc) bc.postMessage({ type: 'video', action: 'stop', from: 'presenter' });
+        try { curIf.contentWindow.postMessage({ type: 'disco-video', action: 'stop' }, '*'); } catch (e) {}
+        setVideoBtn();
+      }
+      function toggleVideo() {
+        if (!Object.prototype.hasOwnProperty.call(VIDEO, idx)) return;
+        if (vplaying) stopVideo(); else playVideo();
+      }
+      if (videoBtn) videoBtn.addEventListener('click', toggleVideo);
+
       wrap.querySelector('#pv-next').addEventListener('click', nextAction);
       wrap.querySelector('#pv-prev').addEventListener('click', prevAction);
       window.addEventListener('keydown', function (e) {
         if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); nextAction(); }
         else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); prevAction(); }
+        else if (e.key === 'v' || e.key === 'V') { e.preventDefault(); toggleVideo(); }
       });
       if (bc) bc.onmessage = function (ev) {
         var m = ev.data || {};
@@ -1889,25 +1935,49 @@
   else initAudience();
 })();
 
-/* ── Persona intro videos: click poster → overlay plays ──────────────────── */
+/* ── Persona intro videos: click poster → overlay plays. Also remote-
+   controllable from the Presenter View — the console plays the video on the
+   audience screen (with sound) over BroadcastChannel and mirrors it muted in
+   its own preview iframe via postMessage. ──────────────────────────────── */
 (function () {
+  var params = new URLSearchParams(location.search);
+  var isEmbed = params.has('embed');
+  var isPresenter = params.has('presenter');
+  var bc = (!isEmbed && !isPresenter && 'BroadcastChannel' in window) ? new BroadcastChannel('disco-deck-sync') : null;
+
   function init() {
+    function sectionFor(i) {
+      if (typeof i === 'number')
+        return document.querySelector('deck-stage > section[data-deck-slide="' + i + '"]');
+      return document.querySelector('deck-stage > section[data-deck-active]')
+          || document.querySelector('deck-stage > section');
+    }
     function closeOverlay(ov) {
       if (!ov) return;
       var v = ov.querySelector('.pv-video');
-      if (v) { v.pause(); }
+      if (v) { try { v.pause(); } catch (e) {} }
       ov.removeAttribute('data-open');
     }
+    function closeAll() { document.querySelectorAll('.pv-overlay[data-open]').forEach(closeOverlay); }
+    function playIn(section, muted) {
+      if (!section) return;
+      var ov = section.querySelector('.pv-overlay');
+      if (!ov) return;
+      var v = ov.querySelector('.pv-video');
+      ov.setAttribute('data-open', '');
+      if (v) {
+        v.muted = !!muted;
+        try { v.currentTime = 0; } catch (e) {}
+        v.play().catch(function () {});
+      }
+    }
+
+    // Direct click in the live/standalone window.
     document.addEventListener('click', function (e) {
       var trigger = e.target.closest ? e.target.closest('.av-video') : null;
       if (trigger) {
         e.preventDefault(); e.stopPropagation();
-        var section = trigger.closest('section');
-        var ov = section && section.querySelector('.pv-overlay');
-        if (!ov) return;
-        var v = ov.querySelector('.pv-video');
-        ov.setAttribute('data-open', '');
-        if (v) { try { v.currentTime = 0; } catch (err) {} v.play().catch(function(){}); }
+        playIn(trigger.closest('section'), false);
         return;
       }
       var closer = e.target.closest ? e.target.closest('.pv-close, .pv-backdrop') : null;
@@ -1916,13 +1986,23 @@
         closeOverlay(closer.closest('.pv-overlay'));
       }
     });
-    // Esc closes; pause any playing video when the slide changes
-    window.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape') document.querySelectorAll('.pv-overlay[data-open]').forEach(closeOverlay);
-    });
+    window.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeAll(); });
     var deck = document.querySelector('deck-stage');
-    if (deck) deck.addEventListener('slidechange', function () {
-      document.querySelectorAll('.pv-overlay').forEach(closeOverlay);
+    if (deck) deck.addEventListener('slidechange', closeAll);
+
+    // Remote control. Audience: presenter drives play/stop with sound.
+    if (bc) bc.onmessage = function (ev) {
+      var m = ev.data || {};
+      if (!m || m.type !== 'video') return;
+      if (m.action === 'play') playIn(sectionFor(typeof m.index === 'number' ? m.index : undefined), false);
+      else if (m.action === 'stop') closeAll();
+    };
+    // Preview iframe: presenter mirrors play/stop muted via postMessage.
+    if (isEmbed) window.addEventListener('message', function (ev) {
+      var m = ev.data || {};
+      if (!m || m.type !== 'disco-video') return;
+      if (m.action === 'play') playIn(sectionFor(typeof m.index === 'number' ? m.index : undefined), true);
+      else if (m.action === 'stop') closeAll();
     });
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
