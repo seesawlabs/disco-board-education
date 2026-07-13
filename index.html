@@ -1893,6 +1893,12 @@
       });
       bc.onmessage = function (ev) {
         var m = ev.data || {};
+        // A presenter console is connected — hide the launcher chip so it's
+        // not on the projected screen during the talk.
+        if (m.from === 'presenter') {
+          var l = document.getElementById('presenter-launch');
+          if (l) l.style.display = 'none';
+        }
         if (m.type === 'goto' && m.from !== 'audience' && typeof m.index === 'number') {
           applyingRemote = true;
           try { deck.goTo(m.index); } catch (e) {}
@@ -1911,7 +1917,7 @@
       'appearance:none', 'border:1px solid rgba(19,34,43,.14)', 'background:rgba(255,255,255,.7)', 'color:#8A949B',
       "font-family:'Source Sans 3',system-ui,sans-serif", 'font-size:10px', 'font-weight:600',
       'letter-spacing:.06em', 'text-transform:uppercase', 'padding:4px 10px', 'border-radius:100px',
-      'cursor:pointer', 'opacity:.55', 'backdrop-filter:blur(4px)', 'transition:opacity .2s', 'display:none'
+      'cursor:pointer', 'opacity:.55', 'backdrop-filter:blur(4px)', 'transition:opacity .2s'
     ].join(';');
     launch.addEventListener('mouseenter', function () { launch.style.opacity = '1'; });
     launch.addEventListener('mouseleave', function () { launch.style.opacity = '.55'; });
@@ -1989,6 +1995,29 @@
     window.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeAll(); });
     var deck = document.querySelector('deck-stage');
     if (deck) deck.addEventListener('slidechange', closeAll);
+
+    // Audience window: browsers block unmuted playback until the tab has had a
+    // user interaction, so a video started *remotely* from the presenter
+    // console would be muted/blocked. Prime every persona video on the first
+    // real gesture here (the password unlock counts) — a quick muted
+    // play/pause "blesses" each element so later remote play has sound.
+    if (!isEmbed && !isPresenter) {
+      var primed = false;
+      var prime = function () {
+        if (primed) return; primed = true;
+        document.querySelectorAll('.pv-video').forEach(function (v) {
+          try {
+            v.muted = true;
+            var p = v.play();
+            if (p && p.then) p.then(function () { try { v.pause(); v.currentTime = 0; } catch (e) {} v.muted = false; })
+                              .catch(function () { v.muted = false; });
+            else { try { v.pause(); } catch (e) {} v.muted = false; }
+          } catch (e) {}
+        });
+      };
+      window.addEventListener('pointerdown', prime, true);
+      window.addEventListener('keydown', prime, true);
+    }
 
     // Remote control. Audience: presenter drives play/stop with sound.
     if (bc) bc.onmessage = function (ev) {
