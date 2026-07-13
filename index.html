@@ -1906,21 +1906,27 @@
         }
       };
     }
-    // Launcher chip (faint, bottom-right) + P key
+    // Launcher: a small, faint outline of the DISCO mark tucked in the
+    // corner (blends into the slide) + P key. Presenter is trained to click it.
     var launch = document.createElement('button');
     launch.id = 'presenter-launch';
     launch.type = 'button';
     launch.setAttribute('data-noncommentable', '');
-    launch.textContent = '⧉ Presenter · P';
+    launch.setAttribute('aria-label', 'Open Presenter View (P)');
+    launch.title = 'Presenter View · P';
+    launch.innerHTML =
+      '<svg width="30" height="17" viewBox="0 0 36 20" fill="none" aria-hidden="true">' +
+        '<circle cx="10" cy="10" r="8.3" stroke="currentColor" stroke-width="1.7"/>' +
+        '<rect x="17.6" y="1.7" width="16.7" height="16.7" rx="0.6" stroke="currentColor" stroke-width="1.7"/>' +
+      '</svg>';
     launch.style.cssText = [
-      'position:fixed', 'right:16px', 'bottom:16px', 'z-index:2147483600',
-      'appearance:none', 'border:1px solid rgba(19,34,43,.14)', 'background:rgba(255,255,255,.7)', 'color:#8A949B',
-      "font-family:'Source Sans 3',system-ui,sans-serif", 'font-size:10px', 'font-weight:600',
-      'letter-spacing:.06em', 'text-transform:uppercase', 'padding:4px 10px', 'border-radius:100px',
-      'cursor:pointer', 'opacity:.55', 'backdrop-filter:blur(4px)', 'transition:opacity .2s'
+      'position:fixed', 'right:10px', 'bottom:8px', 'z-index:2147483600',
+      'appearance:none', 'border:0', 'background:transparent', 'padding:6px',
+      'line-height:0', 'cursor:pointer', 'color:rgba(19,34,43,.28)',
+      'transition:color .2s', 'display:inline-flex'
     ].join(';');
-    launch.addEventListener('mouseenter', function () { launch.style.opacity = '1'; });
-    launch.addEventListener('mouseleave', function () { launch.style.opacity = '.55'; });
+    launch.addEventListener('mouseenter', function () { launch.style.color = 'rgba(19,34,43,.65)'; });
+    launch.addEventListener('mouseleave', function () { launch.style.color = 'rgba(19,34,43,.28)'; });
     function openPresenter() {
       window.open(location.pathname + '?presenter=1#' + (curIndex() + 1),
         'disco-presenter', 'width=1280,height=800');
