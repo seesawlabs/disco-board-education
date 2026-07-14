@@ -1822,14 +1822,26 @@
           videoBtn.classList.remove('playing');
         }
       }
+      // Send a video command to the ONE audience window that opened this
+      // console (window.opener) rather than broadcasting to every deck tab on
+      // the channel — otherwise a stray/extra deck tab would also play and you
+      // get overlapping audio. Fall back to a broadcast only if there's no
+      // opener (e.g., the console was opened directly).
+      function toAudienceVideo(msg) {
+        msg.from = 'presenter';
+        var op = null;
+        try { op = (window.opener && !window.opener.closed) ? window.opener : null; } catch (e) { op = null; }
+        if (op) { try { op.postMessage(msg, '*'); return; } catch (e) {} }
+        if (bc) bc.postMessage(msg);
+      }
       function playVideo() {
         vplaying = true;
-        if (bc) bc.postMessage({ type: 'video', action: 'play', index: idx, from: 'presenter' });
+        toAudienceVideo({ type: 'video', action: 'play', index: idx });
         setVideoBtn();
       }
       function stopVideo() {
         vplaying = false;
-        if (bc) bc.postMessage({ type: 'video', action: 'stop', from: 'presenter' });
+        toAudienceVideo({ type: 'video', action: 'stop' });
         setVideoBtn();
       }
       function toggleVideo() {
@@ -2022,12 +2034,18 @@
     // place a persona video plays; the presenter console drives it with sound.
     // The console preview intentionally does not play video (see note there) —
     // that avoided a second, intermittently-unmuted audio track.
-    if (bc) bc.onmessage = function (ev) {
-      var m = ev.data || {};
+    function handleVideoMsg(m) {
       if (!m || m.type !== 'video') return;
       if (m.action === 'play') playIn(sectionFor(typeof m.index === 'number' ? m.index : undefined), false);
       else if (m.action === 'stop') closeAll();
-    };
+    }
+    // Primary path: the console targets its opener window directly, so only
+    // this one audience plays (no overlap from stray deck tabs).
+    if (!isEmbed && !isPresenter) {
+      window.addEventListener('message', function (ev) { handleVideoMsg(ev.data || {}); });
+    }
+    // Fallback path: broadcast, used only when the console has no opener.
+    if (bc) bc.onmessage = function (ev) { handleVideoMsg(ev.data || {}); };
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();
