@@ -1237,27 +1237,34 @@ body[data-v5="3"] .v5-variant[data-v="3"] { display: grid !important; }
 .trend-note { font-size: 14px; color: var(--ink-3); font-style: italic; margin: 12px 0 0; }
 
 /* ────────── Entities / org diagrams (2.1, 2.3) ────────── */
-.entities { display: grid; grid-template-columns: 1fr 70px 1fr; align-items: stretch; gap: 0; margin-top: 40px; }
+.entities {
+  display: grid; grid-template-columns: 0.78fr 76px 1.22fr; align-items: stretch; gap: 0;
+  margin-top: 40px; flex: 1; min-height: 0;
+}
 .entity {
   border: 1px solid var(--rule-2); border-radius: var(--rad-card);
-  padding: 32px 34px; display: flex; flex-direction: column; gap: 16px; background: #fff;
+  padding: 40px 40px; display: flex; flex-direction: column; gap: 22px; background: #fff;
 }
 .entity.client { border-top: 4px solid var(--teal); }
 .entity.firm   { border-top: 4px solid var(--coral); }
 .entity .e-name { font-size: 30px; font-weight: 700; color: var(--ink); margin: 0; }
 .entity .e-desc { font-size: 20px; color: var(--ink-2); line-height: 1.4; margin: 0; font-weight: 400; }
-.entity .e-rows { display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }
+.entity .e-rows { display: flex; flex-direction: column; gap: 15px; margin-top: 8px; }
 .erow {
   display: flex; align-items: center; gap: 14px;
-  background: var(--pale-2); border: 1px solid var(--rule); border-radius: 8px; padding: 12px 16px;
+  background: var(--pale-2); border: 1px solid var(--rule); border-radius: 8px; padding: 19px 20px;
 }
 .erow.lead { background: var(--ink); border-color: var(--ink); }
 .erow.lead .er-name { color: #fff; }
 .erow.lead .er-role { color: rgba(255,255,255,.6); }
 .erow .er-name { font-size: 22px; font-weight: 700; color: var(--ink); }
 .erow .er-role { font-size: 18px; color: var(--ink-3); font-weight: 500; margin-left: auto; text-align: right; }
-.entity .e-group { font-size: 16px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 700; color: var(--ink-3); margin: 8px 0 0; }
-.entity .e-firmcols { display: grid; grid-template-columns: 1fr 1fr; gap: 0 28px; margin-top: 4px; }
+.entity .e-group { font-size: 16px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 700; color: var(--ink-3); margin: 22px 0 0; }
+/* Firm card carries 4 groups / 7 rows — split into two columns and tighten the
+   label tracking just enough to keep every group label on a single line. */
+.entity .e-firmcols { display: grid; grid-template-columns: 1fr 1fr; gap: 0 34px; margin-top: 2px; }
+.entity .e-firmcols .e-col { display: flex; flex-direction: column; }
+.entity .e-firmcols .e-group { font-size: 14px; letter-spacing: 0.085em; white-space: nowrap; }
 .entity .e-firmcols .e-col > .e-group:first-child { margin-top: 0; }
 .entities .e-link { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; }
 .entities .e-link .arrow { font-size: 34px; color: var(--ink-4); }
