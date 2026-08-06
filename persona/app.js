@@ -42,13 +42,13 @@ function paintPersona() {
   el('prole').textContent = p.role;
   const face = el('pface');
   if (p.portrait) {
-    face.style.backgroundImage = `url('../assets/${p.portrait}')`;
+    face.style.backgroundImage = `url('/assets/${p.portrait}')`;
     face.innerHTML = '';
   } else {
     // Panel mode has no single face — show the three it fans out to.
     face.style.backgroundImage = 'none';
     face.innerHTML = ['steven', 'jose', 'bill']
-      .map((s) => `<span class="stack ${s}" style="background-image:url('../assets/${PERSONAS[s].portrait}')"></span>`)
+      .map((s) => `<span class="stack ${s}" style="background-image:url('/assets/${PERSONAS[s].portrait}')"></span>`)
       .join('');
   }
   document.querySelectorAll('.who-b').forEach((b) => {
