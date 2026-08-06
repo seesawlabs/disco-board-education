@@ -52,18 +52,34 @@ question ──► /api/persona ──► system prompt = dossier + evidence sli
 ```
 
 **The answer contract** is enforced by the API via `output_config.format`, not by hoping the model
-complies. Every answer returns: the reply in voice, a confidence tier (A–D), why that tier, what
-would raise it, the corpus IDs relied on, and — for product questions — whether this persona is
-even the user, the objection they'd raise, what would change their mind, and an adoption verdict.
+complies. Every answer returns: the reply in voice, an outcome tier, why that tier, what would
+raise it, the load-bearing corpus IDs, whether this persona is the right person to ask at all and
+who owns it if not, plus — for product questions — the objection they'd raise, what would change
+their mind, and an adoption verdict.
 
-**Evidence tiers** are the commercial argument, not just an epistemic safeguard:
+**Outcome tiers** are the commercial argument, not just an epistemic safeguard:
 
 | | |
 |---|---|
 | **A — Attested** | Real practitioners addressed this exact question. **Zero in this build.** |
 | **B — Grounded** | Documented behaviour of this population, extrapolated. |
 | **C — Inferred** | Consistent with the dossier, no direct evidence. Flagged. |
-| **D — Out of scope** | Declines, and says who would have to be asked. |
+| **D — Evidence gap** | The persona would know; it hasn't been collected. |
+| **W — Misaddressed** | Wrong person to ask, whatever the evidence says. Names who owns it. |
+
+D and W are deliberately separate. D is a hole in the corpus and belongs in the research backlog.
+W is a fact about the org chart — nobody asks a junior partner which system finance runs — and no
+amount of evidence collection would change it. Collapsing them into one "declined" state hides
+which of the two you're looking at, and they imply completely different follow-ups.
+
+`right_person` is set on **every** answer, not just declines. A persona can answer substantively at
+tier B while still not being the right person to ask — Jose on a product feature, for instance —
+and that combination is often the most useful thing in the response.
+
+**Citations must be load-bearing.** An entry belongs in `sources` only if removing it would change
+the answer. Early testing showed the model padding citations with topically adjacent entries to
+support a *decline*, which is worse than citing nothing: a reader clicks through, finds the source
+doesn't say what was implied, and discounts the rest. Declines usually cite nothing.
 
 Because there is no tier A, "what would raise it" names the missing source — DISCO's win/loss
 interviews, partner-attended call transcripts, a recruited panel. DISCO's team hits that line
@@ -81,8 +97,15 @@ Codex-derived rubric is injected. The rubric leads with "is this persona even th
 for many wireframes the honest answer is that Bo or Tanner is, and saying so is worth more than
 enthusiasm.
 
-**Research backlog** collects every question answered at tier C or D. That list is the interview
+**Research backlog** collects every question answered at tier C, D or W. That list is the interview
 guide for phase 2 — DISCO's own curiosity, turned into a scope document.
+
+**The token meter reports the real prompt size.** `usage.input_tokens` from the API is only the
+*uncached remainder*, so displaying it alone showed "14 in" on a request carrying a 5k-token
+dossier — which reads as though the evidence was never sent. The endpoint returns `total_in`
+(uncached + cache read + cache write) and the UI shows the split. Watch it across turns: the first
+question is a cache write, the second should show ~5k **from cache**. If it never reads from cache,
+prompt caching has broken and every turn is paying full price.
 
 ## Deliberately not built
 

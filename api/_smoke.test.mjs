@@ -21,7 +21,8 @@ const stub = {
             confidence_reason: 'Documented behaviour of this population, not this exact question.',
             what_would_raise_it: "DISCO's win/loss interviews with junior partners.",
             sources: ['E3', 'D2', 'BOGUS-ID'],
-            am_i_the_user: 'partly',
+            right_person: 'partly',
+            who_to_ask: 'Finance owns the budgeting system.',
             objection: 'Verification is the one thing I cannot delegate.',
             what_would_change_it: 'Show the source document beside every generated line.',
             would_let_team_adopt: 'not-my-call',
@@ -82,8 +83,29 @@ check('no rubric leaked into chat mode', !JSON.stringify(p.messages).includes('r
 const a = res._json.answers[0];
 check('bogus source ID dropped', a.sources.length === 2, JSON.stringify(a.sources.map((s) => s.id)));
 check('sources resolved to provenance', a.sources[0].source.length > 10 && 'tier' in a.sources[0]);
-check('usage surfaced', a.usage.cache_read === 3900);
 check('name attached', a.name === 'Steven');
+
+// The meter bug: reporting input_tokens alone read as though the dossier was
+// never sent. total_in must be the sum of all three input buckets.
+check('usage total_in sums every input bucket', a.usage.total_in === 4200 + 3900 + 0,
+  JSON.stringify(a.usage));
+check('uncached remainder kept separate', a.usage.uncached === 4200);
+check('cache_read surfaced', a.usage.cache_read === 3900);
+
+// Schema must carry the fifth outcome and the always-on right_person field.
+const schema = p.output_config.format.schema;
+check('confidence enum includes W', schema.properties.confidence.enum.includes('W'),
+  JSON.stringify(schema.properties.confidence.enum));
+check('right_person replaces am_i_the_user',
+  !!schema.properties.right_person && !schema.properties.am_i_the_user);
+check('right_person has no n/a escape hatch',
+  !schema.properties.right_person.enum.includes('n/a'),
+  JSON.stringify(schema.properties.right_person.enum));
+check('who_to_ask present', !!schema.properties.who_to_ask);
+check('citation rule tightened in contract',
+  p.system[0].text.includes('CITE ONLY WHAT YOU ACTUALLY USED'));
+check('D and W distinguished in contract',
+  p.system[0].text.includes('TWO DIFFERENT DECLINES'));
 
 // ---- 2. review mode with an image ---------------------------------------
 console.log('\n2. design review with image');

@@ -164,6 +164,8 @@ html, body {
 .badge.b { background: var(--pale); color: var(--teal-deep); border: 1px solid var(--teal); }
 .badge.c { background: #FFF4E5; color: #9A6A00; border: 1px solid #E8C37A; }
 .badge.d { background: #FFF0F0; color: var(--coral-deep); border: 1px solid #F3B7B7; }
+/* W is a redirect, not an evidence gap — neutral rather than alarming. */
+.badge.w { background: var(--sand); color: var(--ink-2); border: 1px solid var(--rule-2); }
 
 .ans-b { padding: 16px; }
 .voice { margin: 0; font-size: 17px; line-height: 1.5; }

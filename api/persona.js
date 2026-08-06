@@ -26,9 +26,9 @@ const ANSWER_SCHEMA = {
     },
     confidence: {
       type: 'string',
-      enum: ['A', 'B', 'C', 'D'],
+      enum: ['A', 'B', 'C', 'D', 'W'],
       description:
-        'A = real practitioners addressed this exact question (verbatims exist). B = documented behaviour of this population, extrapolated. C = consistent with the dossier, no direct evidence. D = out of scope, declined.',
+        'A = real practitioners addressed this exact question (verbatims exist). B = documented behaviour of this population, extrapolated. C = consistent with the dossier, no direct evidence. D = the evidence base does not cover it. W = misaddressed: this persona is not the person to ask, whatever the evidence says. Use W only when redirecting is the whole answer; if you can also say something substantive, use A-D and set right_person instead.',
     },
     confidence_reason: {
       type: 'string',
@@ -42,13 +42,19 @@ const ANSWER_SCHEMA = {
     sources: {
       type: 'array',
       items: { type: 'string' },
-      description: 'Corpus IDs actually relied on, e.g. ["E3","D2"]. Empty if none.',
-    },
-    am_i_the_user: {
-      type: 'string',
-      enum: ['yes', 'partly', 'no', 'n/a'],
       description:
-        "For product and design questions: is this persona the intended user? 'no' is a common and useful answer. 'n/a' for non-product questions.",
+        'Only load-bearing corpus IDs — an entry belongs here if removing it would change the answer. Do not pad with topically adjacent entries. An empty array is correct and expected when declining.',
+    },
+    right_person: {
+      type: 'string',
+      enum: ['yes', 'partly', 'no'],
+      description:
+        "Is this persona the right person to ask about this — for ANY question, not just product ones? 'no' is common and useful: a junior partner is not who you ask about finance systems, and often not the user of a feature.",
+    },
+    who_to_ask: {
+      type: 'string',
+      description:
+        'Who actually owns this question — another persona, or a role outside the cast (finance, the innovation function, the client). Empty string when right_person is yes.',
     },
     objection: {
       type: 'string',
@@ -72,7 +78,8 @@ const ANSWER_SCHEMA = {
     'confidence_reason',
     'what_would_raise_it',
     'sources',
-    'am_i_the_user',
+    'right_person',
+    'who_to_ask',
     'objection',
     'what_would_change_it',
     'would_let_team_adopt',
@@ -90,12 +97,29 @@ Ground every answer in the EVIDENCE section. It is the only evidence you have.
 - If the evidence covers the question, use it and cite the IDs.
 - If it does not, say so plainly in voice and set confidence to C or D. Declining is a correct
   and useful answer. Never fill a gap with something that merely sounds plausible.
+
 - Entries marked "tier 4, synthesis" come from a deck the people asking you this question wrote
   themselves. Agreeing with them proves nothing, so lean on external evidence (tier 3) where the
   two overlap, and say when external evidence complicates the deck's version.
 - Entries flagged UNVERIFIED FIGURE have not been checked against the primary source. You may use
   them, but hedge the number ("reportedly", "on the published figures") rather than asserting it.
 - Never present a paraphrase as a direct quotation. None of your evidence is verbatim testimony.
+
+CITE ONLY WHAT YOU ACTUALLY USED. An entry belongs in the sources field only if removing it
+would change your answer. Do not cite an entry because it sits on a related subject — a reader
+will click it, find it does not support what you said, and trust the rest of your answer less.
+That costs more than citing nothing. When you are declining, the honest citation set is usually
+empty, or at most the single entry that establishes what you do touch. Never offer an entry as
+support for a claim it does not make.
+
+TWO DIFFERENT DECLINES, and they are not interchangeable:
+- Tier D — the evidence base has a hole. You would know this; it just hasn't been collected.
+- Tier W — the question is misaddressed. You are not the person to ask, and no amount of evidence
+  about you would change that. Nobody asks a junior partner which system finance runs. Use W only
+  when redirecting is the entire answer, and name who to ask in who_to_ask.
+Set right_person on every answer, not only declines. You can answer substantively at tier B while
+still not being the right person to ask — that combination is often the most useful thing you can
+say, so do not suppress it.
 
 There is no tier A evidence in this build. Nobody has interviewed real practitioners for it yet.
 Say so when it matters, and name what would fix it: DISCO's own win/loss interviews, partner-
@@ -115,7 +139,8 @@ const REVIEW_RUBRIC = `
 This is a product or design question. Work through the rubric in order, then answer in voice.
 
 1. Is this persona even the user? Often the honest answer is that a different role is, and this
-   persona's only question is whether the output can be trusted. Say that if it is true.
+   persona's only question is whether the output can be trusted. Say that if it is true, set
+   right_person to no or partly, and name the real user in who_to_ask.
 2. Is the output verifiable — traceable to source documents, spot-checkable without redoing the
    work? This is the decisive test.
 3. Does it help or hurt verification? Saving verification effort is selling foreclosed leverage.
@@ -127,8 +152,8 @@ This is a product or design question. Work through the rubric in order, then ans
 8. Can associates run it with no firm training?
 9. What does it change about what gets told to the client?
 
-Set am_i_the_user, objection, what_would_change_it and would_let_team_adopt. Keep the answer field
-to the reaction itself — the structured fields carry the rest.
+Set right_person, who_to_ask, objection, what_would_change_it and would_let_team_adopt. Keep the
+answer field to the reaction itself — the structured fields carry the rest.
 `.trim();
 
 function buildSystem(personaSlug, topic) {
@@ -222,12 +247,20 @@ async function ask({ persona, history, mode, image, topic }) {
         date: e.date,
         url: e.url,
       })),
-    usage: {
-      input: response.usage.input_tokens,
-      cache_read: response.usage.cache_read_input_tokens ?? 0,
-      cache_write: response.usage.cache_creation_input_tokens ?? 0,
-      output: response.usage.output_tokens,
-    },
+    // input_tokens is only the UNCACHED remainder. Reporting it alone reads as
+    // though the dossier was never sent, so send the real total too.
+    usage: (() => {
+      const uncached = response.usage.input_tokens ?? 0;
+      const cacheRead = response.usage.cache_read_input_tokens ?? 0;
+      const cacheWrite = response.usage.cache_creation_input_tokens ?? 0;
+      return {
+        total_in: uncached + cacheRead + cacheWrite,
+        uncached,
+        cache_read: cacheRead,
+        cache_write: cacheWrite,
+        output: response.usage.output_tokens ?? 0,
+      };
+    })(),
   };
 }
 

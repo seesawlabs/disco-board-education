@@ -16,7 +16,8 @@ const TIER_COPY = {
   A: 'Attested — real practitioners addressed this',
   B: 'Grounded — documented behaviour, extrapolated',
   C: 'Inferred — no direct evidence',
-  D: 'Out of scope — declined',
+  D: 'Evidence gap — not collected yet',
+  W: 'Misaddressed — wrong person to ask',
 };
 
 const el = (id) => document.getElementById(id);
@@ -85,11 +86,14 @@ function answerCard(a) {
   const tier = (a.confidence || 'C').toUpperCase();
   const cells = [];
 
-  if (a.am_i_the_user && a.am_i_the_user !== 'n/a') {
-    const warn = a.am_i_the_user === 'no' ? ' warn' : '';
+  if (a.right_person) {
+    const warn = a.right_person === 'no' ? ' warn' : '';
     cells.push(
-      `<div class="cell${warn}"><dt>Am I the user?</dt><dd>${a.am_i_the_user}</dd></div>`,
+      `<div class="cell${warn}"><dt>Right person to ask?</dt><dd>${a.right_person}</dd></div>`,
     );
+  }
+  if (a.who_to_ask) {
+    cells.push(`<div class="cell"><dt>Who actually owns this</dt><dd>${a.who_to_ask}</dd></div>`);
   }
   if (a.would_let_team_adopt && a.would_let_team_adopt !== 'n/a') {
     cells.push(
@@ -109,7 +113,9 @@ function answerCard(a) {
     ? `<dl class="grid" style="grid-template-columns:repeat(${Math.min(cells.length, 2)},1fr)">${cells.join('')}</dl>`
     : '';
 
-  const why = `<p class="why"><b>Confidence ${tier} — ${TIER_COPY[tier]}.</b> ${a.confidence_reason || ''}${
+  // W is an outcome, not a rung on the confidence scale — don't label it as one.
+  const lead = tier === 'W' ? TIER_COPY.W : `Confidence ${tier} — ${TIER_COPY[tier]}`;
+  const why = `<p class="why"><b>${lead}.</b> ${a.confidence_reason || ''}${
     a.what_would_raise_it ? ` <br><b>What would raise it:</b> ${a.what_would_raise_it}` : ''
   }</p>`;
 
@@ -117,8 +123,13 @@ function answerCard(a) {
     ? `<div class="srcs"><h3>Evidence</h3><ol>${a.sources.map(sourceLine).join('')}</ol></div>`
     : '<div class="srcs"><h3>Evidence</h3><p class="note">Nothing in the evidence base covers this.</p></div>';
 
-  const meter = a.usage
-    ? `<p class="meter">${a.usage.input} in · ${a.usage.cache_read} cached · ${a.usage.output} out</p>`
+  // Show the real prompt size. `uncached` alone looks absurdly small because the
+  // dossier and evidence arrive as a cache read or write, not as fresh input.
+  const u = a.usage;
+  const meter = u
+    ? `<p class="meter">${u.total_in.toLocaleString()} in (${
+        u.cache_read ? `${u.cache_read.toLocaleString()} from cache` : `${u.cache_write.toLocaleString()} cache write`
+      }, ${u.uncached} new) · ${u.output.toLocaleString()} out</p>`
     : '';
 
   return `
@@ -263,7 +274,7 @@ composer.addEventListener('submit', async (e) => {
 
     // Anything the evidence base couldn't carry becomes a research task.
     payload.answers.forEach((a) => {
-      if (['C', 'D'].includes((a.confidence || '').toUpperCase()) && !backlog.includes(text)) {
+      if (['C', 'D', 'W'].includes((a.confidence || '').toUpperCase()) && !backlog.includes(text)) {
         backlog.push(text);
       }
     });
