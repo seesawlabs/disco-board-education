@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Steven — synthetic user · DISCO</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="../assets/disco-favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="persona.css">
+</head>
+<body>
+
+<header class="top">
+  <span class="brand"><b>DISCO</b> <span class="x">Synthetic user · prototype</span></span>
+  <nav class="who" id="who">
+    <button class="who-b is-on" data-persona="steven">Steven</button>
+    <button class="who-b" data-persona="jose">Jose</button>
+    <button class="who-b" data-persona="bill">Bill</button>
+    <button class="who-b is-panel" data-persona="panel">All three</button>
+  </nav>
+  <span class="synth">Synthetic — composite, not a real person</span>
+</header>
+
+<main class="wrap">
+
+  <aside class="rail">
+    <div class="pcard">
+      <div class="pface" id="pface"></div>
+      <p class="pname" id="pname">Steven</p>
+      <p class="prole" id="prole">Junior partner · Top AmLaw firm</p>
+    </div>
+
+    <section class="box">
+      <h2>Evidence behind this build</h2>
+      <ul class="tiers">
+        <li><span class="tk t3">Tier 3</span><span>Public record — 18 sources</span></li>
+        <li><span class="tk t4">Tier 4</span><span>The board deck — 8 entries</span></li>
+        <li class="is-off"><span class="tk t2">Tier 2</span><span>DISCO's calls, win/loss and CS notes — <b>not in this build</b></span></li>
+        <li class="is-off"><span class="tk t1">Tier 1</span><span>Practitioner panel — <b>not in this build</b></span></li>
+      </ul>
+      <p class="note">Every answer is tagged A–D for how well the evidence actually covers it. There is no
+      tier&nbsp;A in this build because nobody has been interviewed for it yet — that is what the
+      greyed tiers buy.</p>
+    </section>
+
+    <section class="box">
+      <h2>Try</h2>
+      <ul class="seeds" id="seeds">
+        <li><button data-seed="I'm pitching an AmLaw 50 firm next week and you'll be in the room. What do you push back on?">Pre-call rehearsal</button></li>
+        <li><button data-seed="Where does your week actually disappear? Be specific about the worst of it.">Where the time goes</button></li>
+        <li><button data-seed="We're considering an AI feature that drafts the client status update from the record. Reaction?">AI drafting feature</button></li>
+        <li><button data-seed="Our positioning line is 'DISCO gives litigation teams one platform, end to end.' Does that land with you?">Message test</button></li>
+        <li><button data-seed="What have you heard about Harvey?">Competitor (expect a decline)</button></li>
+        <li><button data-seed="What would you pay for this?">Pricing (expect a decline)</button></li>
+      </ul>
+    </section>
+
+    <section class="box" id="backlogBox" hidden>
+      <h2>Research backlog</h2>
+      <p class="note">Questions this build could not answer well. This list is the interview guide for
+      the next phase.</p>
+      <ol class="backlog" id="backlog"></ol>
+    </section>
+  </aside>
+
+  <section class="stage">
+    <div class="thread" id="thread">
+      <div class="intro">
+        <h1>Ask Steven.</h1>
+        <p>A synthetic junior partner, grounded in a cited evidence base rather than an impression of
+        one. He will decline questions the evidence doesn't cover, and he will tell you when a
+        feature isn't for him.</p>
+        <p class="intro-note">Drop in a wireframe or screenshot and he'll critique it against his own
+        decision criteria.</p>
+      </div>
+    </div>
+
+    <form class="composer" id="composer">
+      <div class="attached" id="attached" hidden>
+        <img id="attachedImg" alt="Attached design">
+        <button type="button" id="dropAttach" aria-label="Remove attachment">&times;</button>
+        <span>Design review mode</span>
+      </div>
+      <div class="crow">
+        <label class="clip" title="Attach a wireframe or screenshot">
+          <input type="file" id="file" accept="image/png,image/jpeg,image/webp,image/gif" hidden>
+          <span aria-hidden="true">+</span>
+        </label>
+        <textarea id="q" rows="1" placeholder="Ask a question, or attach a design…"></textarea>
+        <button type="submit" id="send">Ask</button>
+      </div>
+    </form>
+  </section>
+</main>
+
+<script src="app.js"></script>
+</body>
+</html>

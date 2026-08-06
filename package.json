@@ -1,0 +1,13 @@
+{
+  "name": "disco-board-education",
+  "private": true,
+  "type": "module",
+  "description": "Static slide deck plus the synthetic-persona demo endpoint. The deck itself has no build step; this file exists for the /api functions.",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.71.0"
+  },
+  "scripts": {
+    "test:persona": "node api/_smoke.test.mjs",
+    "dev": "vercel dev"
+  }
+}

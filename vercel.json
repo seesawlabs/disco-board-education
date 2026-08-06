@@ -1,4 +1,7 @@
 {
+  "functions": {
+    "api/persona.js": { "maxDuration": 120 }
+  },
   "headers": [
     {
       "source": "/(.*)",
