@@ -66,7 +66,8 @@
     </section>
   </aside>
 
-  <section class="stage">
+  <section class="stage" id="stage">
+    <div class="dropzone" id="dropzone"><p>Drop the design to have Steven react to it</p></div>
     <div class="thread" id="thread">
       <div class="intro">
         <h1>Ask Steven.</h1>
@@ -81,17 +82,20 @@
     <form class="composer" id="composer">
       <div class="attached" id="attached" hidden>
         <img id="attachedImg" alt="Attached design">
-        <button type="button" id="dropAttach" aria-label="Remove attachment">&times;</button>
         <span>Design review mode</span>
+        <span class="ameta" id="attachedMeta"></span>
+        <button type="button" id="dropAttach" aria-label="Remove attachment">&times;</button>
       </div>
       <div class="crow">
         <label class="clip" title="Attach a wireframe or screenshot">
           <input type="file" id="file" accept="image/png,image/jpeg,image/webp,image/gif" hidden>
-          <span aria-hidden="true">+</span>
+          <span class="plus" aria-hidden="true">+</span><span>Attach a design</span>
         </label>
         <textarea id="q" rows="1" placeholder="Ask a question, or attach a design…"></textarea>
         <button type="submit" id="send">Ask</button>
       </div>
+      <p class="hint">Take a screenshot and paste it with <kbd>⌘V</kbd>, drag an image anywhere onto
+      the conversation, or use <b>Attach a design</b>. Large images are scaled down before sending.</p>
     </form>
   </section>
 </main>

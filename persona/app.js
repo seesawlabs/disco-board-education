@@ -59,6 +59,10 @@ function paintPersona() {
     persona === 'panel'
       ? 'Ask one question, get three incompatible answers…'
       : `Ask ${p.name} a question, or attach a design…`;
+  el('dropzone').firstElementChild.textContent =
+    persona === 'panel'
+      ? 'Drop the design — all three will react'
+      : `Drop the design to have ${p.name} react to it`;
   renderThread();
 }
 
@@ -109,6 +113,13 @@ function answerCard(a) {
     );
   }
 
+  // An odd cell count would leave a hole in a two-column grid, which reads as a
+  // rendering bug — let the last one span instead.
+  if (cells.length > 1 && cells.length % 2 === 1) {
+    cells[cells.length - 1] = cells[cells.length - 1].replace(
+      '<div class="cell', '<div style="grid-column:1/-1" class="cell',
+    );
+  }
   const grid = cells.length
     ? `<dl class="grid" style="grid-template-columns:repeat(${Math.min(cells.length, 2)},1fr)">${cells.join('')}</dl>`
     : '';
@@ -179,18 +190,75 @@ function renderBacklog() {
 }
 
 /* ──────────────────────────── image attachment ─────────────────────────── */
+/* Three ways in — paste, drag-and-drop, file picker — all funnelling through
+ * acceptImage() so the downscaling can't be bypassed. A raw retina screenshot
+ * base64s past Vercel's ~4.5MB request limit and would 413 before reaching the
+ * model, so scaling is required, not cosmetic. It also caps image tokens.        */
+
+const MAX_EDGE = 1568;   // long edge; above this the extra pixels mostly cost tokens
+const PNG_CEILING = 1.2 * 1024 * 1024; // beyond this, re-encode as JPEG
+
+function loadImage(file) {
+  return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => { URL.revokeObjectURL(url); resolve(img); };
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('Could not read that image.')); };
+    img.src = url;
+  });
+}
+
+async function acceptImage(file) {
+  if (!file || !file.type.startsWith('image/')) {
+    showError('That file is not an image. PNG, JPEG, WebP or GIF.');
+    return;
+  }
+  try {
+    const img = await loadImage(file);
+    const scale = Math.min(1, MAX_EDGE / Math.max(img.width, img.height));
+    const w = Math.round(img.width * scale);
+    const h = Math.round(img.height * scale);
+
+    const canvas = document.createElement('canvas');
+    canvas.width = w;
+    canvas.height = h;
+    const ctx = canvas.getContext('2d');
+    ctx.imageSmoothingQuality = 'high';
+    // Flatten onto white so transparent PNGs don't read as black in JPEG.
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(0, 0, w, h);
+    ctx.drawImage(img, 0, 0, w, h);
+
+    // PNG keeps UI text crisp; fall back to JPEG when that gets too heavy.
+    let url = canvas.toDataURL('image/png');
+    let media_type = 'image/png';
+    if (url.length * 0.75 > PNG_CEILING) {
+      url = canvas.toDataURL('image/jpeg', 0.9);
+      media_type = 'image/jpeg';
+    }
+
+    image = { media_type, data: url.split(',')[1], url };
+    attachedImg.src = url;
+    el('attachedMeta').textContent =
+      `${w}×${h} · ${Math.round((url.length * 0.75) / 1024)} KB` +
+      (scale < 1 ? ` · scaled from ${img.width}×${img.height}` : '');
+    attached.hidden = false;
+    qBox.focus();
+  } catch (err) {
+    showError(err.message);
+  }
+}
+
+function showError(msg) {
+  const box = document.createElement('div');
+  box.className = 'turn err';
+  box.textContent = msg;
+  thread.appendChild(box);
+  thread.scrollTop = thread.scrollHeight;
+}
 
 fileInput.addEventListener('change', () => {
-  const f = fileInput.files && fileInput.files[0];
-  if (!f) return;
-  const reader = new FileReader();
-  reader.onload = () => {
-    const url = reader.result;
-    image = { media_type: f.type, data: url.split(',')[1], url };
-    attachedImg.src = url;
-    attached.hidden = false;
-  };
-  reader.readAsDataURL(f);
+  acceptImage(fileInput.files && fileInput.files[0]);
 });
 
 el('dropAttach').addEventListener('click', () => {
@@ -198,6 +266,43 @@ el('dropAttach').addEventListener('click', () => {
   fileInput.value = '';
   attached.hidden = true;
 });
+
+// Paste — the natural gesture after ⌘⇧4. Ignored while typing a normal paste
+// into the textarea unless the clipboard actually carries an image.
+document.addEventListener('paste', (e) => {
+  const item = [...(e.clipboardData?.items || [])].find((i) => i.type.startsWith('image/'));
+  if (!item) return;
+  e.preventDefault();
+  acceptImage(item.getAsFile());
+});
+
+// Drag and drop anywhere over the conversation.
+const stage = el('stage');
+let dragDepth = 0;   // dragenter/leave fire per child; count to avoid flicker
+const carriesFile = (e) => [...(e.dataTransfer?.types || [])].includes('Files');
+
+stage.addEventListener('dragenter', (e) => {
+  if (!carriesFile(e)) return;
+  e.preventDefault();
+  dragDepth++;
+  stage.classList.add('is-dragging');
+});
+stage.addEventListener('dragover', (e) => {
+  if (carriesFile(e)) e.preventDefault();
+});
+stage.addEventListener('dragleave', () => {
+  if (--dragDepth <= 0) { dragDepth = 0; stage.classList.remove('is-dragging'); }
+});
+stage.addEventListener('drop', (e) => {
+  if (!carriesFile(e)) return;
+  e.preventDefault();
+  dragDepth = 0;
+  stage.classList.remove('is-dragging');
+  acceptImage(e.dataTransfer.files && e.dataTransfer.files[0]);
+});
+// A drop that lands outside the stage would otherwise navigate away from the page.
+window.addEventListener('dragover', (e) => { if (carriesFile(e)) e.preventDefault(); });
+window.addEventListener('drop', (e) => { if (carriesFile(e)) e.preventDefault(); });
 
 /* ──────────────────────────────── sending ──────────────────────────────── */
 
@@ -282,10 +387,7 @@ composer.addEventListener('submit', async (e) => {
   } catch (err) {
     histories[persona].pop(); // drop the unanswered turn so retry is clean
     renderThread();
-    const box = document.createElement('div');
-    box.className = 'turn err';
-    box.textContent = err.message;
-    thread.appendChild(box);
+    showError(err.message);
   } finally {
     busy = false;
     sendBtn.disabled = false;

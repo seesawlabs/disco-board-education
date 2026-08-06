@@ -31,6 +31,10 @@
 
 html, body {
   margin: 0; padding: 0;
+  /* App shell: the page itself never scrolls, so the composer is always in
+     view. The rail and the thread scroll independently inside it. */
+  height: 100dvh; overflow: hidden;
+  display: flex; flex-direction: column;
   background: var(--bg);
   color: var(--ink);
   font-family: 'Source Sans 3', 'Source Sans Pro', system-ui, -apple-system, Segoe UI, sans-serif;
@@ -42,10 +46,11 @@ html, body {
 
 /* ────────── top bar ────────── */
 .top {
+  flex: 0 0 auto;
   display: flex; align-items: center; gap: 24px;
   padding: 14px 28px;
   border-bottom: 1px solid var(--rule);
-  position: sticky; top: 0; background: var(--bg); z-index: 5;
+  background: var(--bg); z-index: 5;
 }
 .brand { font-size: 15px; letter-spacing: .02em; white-space: nowrap; }
 .brand b { font-weight: 800; }
@@ -70,14 +75,19 @@ html, body {
 
 /* ────────── layout ────────── */
 .wrap {
+  flex: 1 1 auto; min-height: 0;
   display: grid; grid-template-columns: 300px minmax(0, 1fr);
-  gap: 0; min-height: calc(100vh - 57px);
+  gap: 0;
 }
 .rail {
   border-right: 1px solid var(--rule); background: var(--pale-2);
   padding: 24px 22px 40px; display: flex; flex-direction: column; gap: 26px;
+  overflow-y: auto; min-height: 0;
 }
-.stage { display: flex; flex-direction: column; min-width: 0; }
+.stage {
+  display: flex; flex-direction: column; min-width: 0; min-height: 0;
+  position: relative;
+}
 
 /* ────────── persona card ────────── */
 .pcard { text-align: left; }
@@ -124,7 +134,7 @@ html, body {
 
 /* ────────── thread ────────── */
 .thread {
-  flex: 1 1 auto; overflow-y: auto; padding: 40px 44px 24px;
+  flex: 1 1 auto; min-height: 0; overflow-y: auto; padding: 40px 44px 24px;
   display: flex; flex-direction: column; gap: 26px;
 }
 .intro { max-width: 620px; }
@@ -204,12 +214,16 @@ html, body {
 .meter { margin: 10px 16px 14px; font-size: 11px; color: var(--ink-4); }
 
 /* ────────── composer ────────── */
-.composer { border-top: 1px solid var(--rule); padding: 14px 44px 20px; background: var(--bg); }
+.composer {
+  flex: 0 0 auto;
+  border-top: 1px solid var(--rule); padding: 14px 44px 20px; background: var(--bg);
+}
 .attached {
   display: flex; align-items: center; gap: 10px; margin-bottom: 10px;
   font-size: 12.5px; color: var(--teal-deep); font-weight: 600;
 }
 .attached img { height: 44px; border-radius: var(--rad); border: 1px solid var(--rule-2); }
+.attached .ameta { color: var(--ink-3); font-weight: 400; }
 .attached button {
   font: inherit; font-size: 16px; line-height: 1; border: 1px solid var(--rule-2);
   background: var(--bg); border-radius: var(--rad); width: 24px; height: 24px;
@@ -217,11 +231,32 @@ html, body {
 }
 .crow { display: flex; gap: 10px; align-items: flex-end; max-width: 900px; }
 .clip {
-  flex: 0 0 auto; width: 40px; height: 40px; display: grid; place-items: center;
+  flex: 0 0 auto; height: 40px; display: flex; align-items: center; gap: 7px;
+  padding: 0 13px;
   border: 1px solid var(--rule-2); border-radius: var(--rad); cursor: pointer;
-  font-size: 20px; color: var(--ink-2); transition: var(--tr);
+  font-size: 14px; font-weight: 600; color: var(--ink-2); transition: var(--tr);
+  white-space: nowrap;
 }
 .clip:hover { border-color: var(--teal); color: var(--teal-deep); }
+.clip .plus { font-size: 17px; line-height: 1; }
+.hint { margin: 8px 0 0; font-size: 12px; color: var(--ink-3); max-width: 900px; }
+.hint kbd {
+  font: inherit; font-size: 11px; font-weight: 600; padding: 1px 5px;
+  border: 1px solid var(--rule-2); border-bottom-width: 2px; border-radius: 3px;
+  background: var(--pale-2); color: var(--ink-2);
+}
+
+/* Drop target covers the whole conversation area, not just the composer. */
+.dropzone {
+  position: absolute; inset: 0; z-index: 20;
+  display: none; place-items: center;
+  background: rgba(240, 248, 255, .93); border: 2px dashed var(--teal);
+}
+.stage.is-dragging .dropzone { display: grid; }
+.dropzone p {
+  margin: 0; font-size: 22px; font-weight: 600; color: var(--teal-deep);
+  pointer-events: none;
+}
 #q {
   flex: 1 1 auto; font: inherit; font-size: 15.5px; resize: none;
   padding: 10px 12px; border: 1px solid var(--rule-2); border-radius: var(--rad);
@@ -244,8 +279,17 @@ html, body {
 }
 
 @media (max-width: 900px) {
-  .wrap { grid-template-columns: 1fr; }
-  .rail { border-right: 0; border-bottom: 1px solid var(--rule); }
+  /* Too little height to hold a fixed shell — let the document scroll instead,
+     and pin the composer so it stays reachable. */
+  html, body { height: auto; overflow: visible; display: block; }
+  .wrap { grid-template-columns: 1fr; min-height: 0; }
+  .rail { border-right: 0; border-bottom: 1px solid var(--rule); overflow: visible; }
+  .thread { overflow: visible; }
+  .composer {
+    position: sticky; bottom: 0;
+    box-shadow: 0 -8px 20px rgba(19, 34, 43, .06);
+  }
   .thread, .composer { padding-left: 22px; padding-right: 22px; }
   .synth { display: none; }
+  .stage .dropzone { position: fixed; }
 }
