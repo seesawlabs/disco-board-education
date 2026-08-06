@@ -400,3 +400,14 @@ composer.addEventListener('submit', async (e) => {
 
 thread.dataset.intro = thread.innerHTML;
 paintPersona();
+
+// Corpus counts come from the endpoint so they can't drift when evidence is
+// added. Silently leaves the placeholders if /api isn't running (static server).
+fetch('/api/persona')
+  .then((r) => (r.ok ? r.json() : null))
+  .then((d) => {
+    if (!d?.corpus) return;
+    el('n3').textContent = d.corpus.by_tier[3] ?? 0;
+    el('n4').textContent = d.corpus.by_tier[4] ?? 0;
+  })
+  .catch(() => {});

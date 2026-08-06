@@ -174,10 +174,6 @@ check('only last user turn gets blocks', typeof captured[0].messages[0].content 
 // ---- 5. error paths -----------------------------------------------------
 console.log('\n5. error handling');
 res = mockRes();
-await handler({ method: 'GET' }, res);
-check('GET rejected 405', res._status === 405);
-
-res = mockRes();
 await handler({ method: 'POST', body: { persona: 'nobody', messages: [{ role: 'user', content: 'x' }] } }, res);
 check('unknown persona 400', res._status === 400, JSON.stringify(res._json));
 
@@ -197,5 +193,21 @@ await handler({ method: 'POST', body: { persona: 'steven', messages: [{ role: 'u
 check('refusal surfaced as 422', res._status === 422, JSON.stringify(res._json));
 Messages.prototype.create = realCreate;
 
+// ---- 6. GET stats endpoint (no model call, no key required) --------------
+console.log('\n6. corpus stats endpoint');
+res = mockRes();
+await handler({ method: 'GET' }, res);
+check('GET 200', res._status === 200, JSON.stringify(res._json));
+const st = res._json.corpus;
+check('total reported', st.total === 26, st.total);
+check('tier breakdown', st.by_tier[3] === 18 && st.by_tier[4] === 8, JSON.stringify(st.by_tier));
+check('unverified count', st.unverified === 18, st.unverified);
+check('per-persona counts', st.per_persona.steven === 24, JSON.stringify(st.per_persona));
+
+res = mockRes();
+await handler({ method: 'PUT' }, res);
+check('other methods 405', res._status === 405);
+
 console.log(failures ? `\n${failures} FAILURE(S)\n` : '\nAll checks passed.\n');
 process.exit(failures ? 1 : 0);
+

@@ -265,8 +265,26 @@ async function ask({ persona, history, mode, image, topic }) {
 }
 
 export default async function handler(req, res) {
+  // GET returns corpus stats only — no model call, no API key needed. The rail
+  // reads this so the counts can't drift out of date when evidence is added.
+  if (req.method === 'GET') {
+    const byTier = {};
+    for (const e of CORPUS) byTier[e.tier] = (byTier[e.tier] || 0) + 1;
+    res.status(200).json({
+      corpus: {
+        total: CORPUS.length,
+        by_tier: byTier,
+        unverified: CORPUS.filter((e) => !e.verified).length,
+        per_persona: Object.fromEntries(
+          Object.keys(CODICES).map((slug) => [slug, selectCorpus(slug, null).length]),
+        ),
+      },
+    });
+    return;
+  }
+
   if (req.method !== 'POST') {
-    res.status(405).json({ error: 'POST only.' });
+    res.status(405).json({ error: 'GET or POST only.' });
     return;
   }
   if (!process.env.ANTHROPIC_API_KEY) {

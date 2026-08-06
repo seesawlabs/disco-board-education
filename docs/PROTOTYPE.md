@@ -107,6 +107,112 @@ dossier — which reads as though the evidence was never sent. The endpoint retu
 question is a cache write, the second should show ~5k **from cache**. If it never reads from cache,
 prompt caching has broken and every turn is paying full price.
 
+## The data model
+
+**There is no database.** Two version-controlled JS modules are the whole store:
+
+- `api/_corpus.js` — the evidence base. One flat `CORPUS` array of objects.
+- `api/_codices.js` — the persona dossiers. One `CODICES` object keyed by slug.
+
+That is deliberate. Evidence changes arrive as a reviewable diff in a pull request, every claim
+has an author and a date in git history, and there is no schema migration, no admin UI, and no
+second source of truth to drift. At this size a database would add operational surface and buy
+nothing.
+
+**Nothing is persisted at runtime.** Conversations live in browser memory (`histories` in
+`app.js`) and are gone on reload; so is the research backlog. No transcripts, no user data, no
+uploaded images are stored server-side — an uploaded screenshot exists only for the duration of
+the request. Good for a privacy conversation with DISCO, and a real gap for Part B: the plan
+treats the query log as a compounding asset, and right now it evaporates.
+
+### One evidence entry
+
+```js
+{
+  id: 'E3',                    // unique. E# external, D# deck (see conventions below)
+  tier: 3,                     // 1 panel · 2 DISCO internal · 3 public · 4 our deck
+  source: 'Norton Rose Fulbright — "AI in litigation: Gen AI sanctions in 2026"',
+  date: '2026',                // shown in the UI; 'undated' if genuinely unknown
+  url: 'https://…',            // or null — renders as a clickable citation
+  kind: 'paraphrase',          // verbatim | paraphrase | synthesis
+  verified: false,             // false ⇒ renders "unverified figure", persona hedges it
+  topics: ['verification', 'ai-risk', 'delegation'],
+  personas: ['steven', 'jose', 'bo', 'tanner'],   // who can see it
+  text: 'Courts have held that an attorney\'s duty to verify all citations is non-delegable…',
+}
+```
+
+Three fields do the load-bearing work:
+
+- **`personas`** controls visibility. An entry not tagged for a persona is invisible to them —
+  this is the retrieval filter, so a mis-tag is why an answer "forgot" something.
+- **`tier`** and **`kind`** drive the citation pills and the anti-circularity handling. Tier 4
+  renders as `our deck` and the persona is told that agreeing with it proves nothing.
+- **`verified: false`** makes the persona hedge the number and shows a red pill. All 18 tier-3
+  entries are currently `false`.
+
+### How it reaches the model
+
+```
+selectCorpus(persona, topic)      filter CORPUS by personas[] (and topics[] if given)
+        ↓
+renderCorpus(entries)             sorted by id → "[E3] (tier 3, paraphrase) source…"
+        ↓
+buildSystem()                     dossier + evidence + contract, one cached system block
+        ↓
+Claude Opus 5                     the whole slice, every request
+```
+
+**It is filter-then-inline, not embeddings.** No vector store, no chunking, no top-k similarity
+search. The persona's entire evidence slice goes into the system prompt on every request, so the
+model sees all of it rather than whatever retrieval guessed was relevant — which is why it can say
+"nothing here covers that" with confidence. Current sizes:
+
+| Persona | Entries | System prompt |
+|---|---|---|
+| Steven | 24 | ≈3,450 tokens (+ ~700 contract) |
+| Jose | 16 | ≈2,000 tokens |
+| Bill | 12 | ≈1,650 tokens |
+
+Prompt caching is what makes that cheap: the block is byte-stable per persona, so after the first
+request it is a cache read at roughly a tenth of the input price.
+
+**`topic` is wired but dormant.** `selectCorpus` and `TOPIC_ALIASES` support narrowing by topic
+end to end, but the client never sends a `topic`, so every request currently gets the persona's
+full slice. It is the escape hatch, not an active feature.
+
+**When this approach stops working:** roughly when a single persona's slice passes ~25–30k tokens,
+which is a few hundred entries. Before that, nothing is gained by adding infrastructure. At that
+point the cheap move is to start sending `topic` (already built); the real move is proper retrieval
+over a store, which is Part B work.
+
+## Adding new evidence
+
+The common case — a new source. One file, no rebuild:
+
+1. Append an object to `CORPUS` in `api/_corpus.js` using the shape above.
+2. Give it an unused `id`. Prefixes are conventions, not enforced: `E#` external, `D#` deck.
+   For new tiers, start a new prefix so provenance is legible at a glance — e.g. `W#` win/loss,
+   `C#` partner-attended calls, `S#` support/CS, `P#` panel interviews.
+3. Tag `personas` deliberately. This is the only thing controlling who sees it.
+4. Set `verified` honestly. `true` means someone read the primary source.
+5. `npm run test:persona`, then commit and push. The push deploys; there is no build step and
+   the sidebar counts update themselves from the endpoint.
+
+**Paraphrase, don't dump.** Entries are read by a model inside a prompt, so one tight paragraph
+of the finding beats a page of raw transcript. Set `kind: 'verbatim'` and quote exactly only when
+the exact words matter — those are the entries that can be quoted back.
+
+**Adding a whole tier** (say DISCO's win/loss library) needs nothing structural: same array,
+`tier: 2`, a `W#` prefix, and the tier already renders. Two copy changes make it land properly —
+the tier list in `persona/index.html` still says "not in this build", and the contract in
+`api/persona.js` asserts "There is no tier A evidence in this build."
+
+**Adding a persona** is a data change in three places: a `CODICES` entry in `api/_codices.js`
+(plus `PANEL` if they should join panel mode), a `PERSONAS` entry in `persona/app.js`, and a
+button in `persona/index.html`. Then tag existing evidence with the new slug so they can see it,
+and drop a portrait at `assets/persona-<slug>-portrait.png`. No endpoint changes.
+
 ## Deliberately not built
 
 Ingest automation, the other five personas, auth, multi-tenancy, Slack, streaming responses,
