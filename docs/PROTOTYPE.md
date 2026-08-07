@@ -14,9 +14,14 @@ Live at `/persona/` alongside the deck.
 | `persona/persona.css` | Styling — deck tokens copied from `styles.css` (standalone on purpose; `styles.css` is sized for a 1920×1080 projected slide) |
 | `persona/app.js` | Client: transcript per persona, image attach, answer-card rendering, research backlog |
 | `api/persona.js` | Serverless endpoint. Builds the system prompt, calls Claude, enforces the answer contract |
-| `api/_codices.js` | Persona dossiers. Adding a persona is a data change only |
-| `api/_corpus.js` | The tagged evidence base + retrieval |
-| `api/_smoke.test.mjs` | Regression checks with the network stubbed |
+| `api/_codices.js` | Persona dossiers + the cast roster. Adding a persona is a data change only |
+| **`data/corpus.yaml`** | **The evidence base — the file you edit.** Source of truth |
+| `scripts/corpus.mjs` | Validates the YAML and generates the module the endpoint imports |
+| `api/_corpus.generated.js` | Generated. Never edit by hand |
+| `api/_corpus.js` | Retrieval only (`selectCorpus`, `renderCorpus`, topic aliases) |
+| `scripts/_validator.test.mjs` | Tests that the validator actually rejects bad entries |
+| `api/_smoke.test.mjs` | Endpoint contract checks with the network stubbed |
+| `.github/workflows/ci.yml` | Runs all three suites on every pull request |
 
 ## Running it
 
@@ -109,15 +114,22 @@ prompt caching has broken and every turn is paying full price.
 
 ## The data model
 
-**There is no database.** Two version-controlled JS modules are the whole store:
+**There is no database.** Version-controlled files are the whole store:
 
-- `api/_corpus.js` — the evidence base. One flat `CORPUS` array of objects.
-- `api/_codices.js` — the persona dossiers. One `CODICES` object keyed by slug.
+- `data/corpus.yaml` — the evidence base, and the only file you edit to add knowledge.
+- `api/_codices.js` — the persona dossiers, plus `ROSTER`, the deck's full cast.
 
 That is deliberate. Evidence changes arrive as a reviewable diff in a pull request, every claim
 has an author and a date in git history, and there is no schema migration, no admin UI, and no
 second source of truth to drift. At this size a database would add operational surface and buy
 nothing.
+
+**Why YAML, and why generated.** Evidence used to live in an executable JS array, which meant a
+stray apostrophe in a quotation was a syntax error that took the whole endpoint down. YAML block
+scalars need no escaping at all, and allow comments. `npm run corpus:build` validates the YAML and
+writes `api/_corpus.generated.js`, which is what the endpoint imports — so there is no YAML parser
+at request time, no file-tracing surprises on Vercel, and a malformed corpus fails on your machine
+or in CI rather than in front of DISCO. The generated file is committed; CI fails if it is stale.
 
 **Nothing is persisted at runtime.** Conversations live in browser memory (`histories` in
 `app.js`) and are gone on reload; so is the research backlog. No transcripts, no user data, no
@@ -127,20 +139,22 @@ treats the query log as a compounding asset, and right now it evaporates.
 
 ### One evidence entry
 
-```js
-{
-  id: 'E3',                    // unique. E# external, D# deck (see conventions below)
-  tier: 3,                     // 1 panel · 2 DISCO internal · 3 public · 4 our deck
-  source: 'Norton Rose Fulbright — "AI in litigation: Gen AI sanctions in 2026"',
-  date: '2026',                // shown in the UI; 'undated' if genuinely unknown
-  url: 'https://…',            // or null — renders as a clickable citation
-  kind: 'paraphrase',          // verbatim | paraphrase | synthesis
-  verified: false,             // false ⇒ renders "unverified figure", persona hedges it
-  topics: ['verification', 'ai-risk', 'delegation'],
-  personas: ['steven', 'jose', 'bo', 'tanner'],   // who can see it
-  text: 'Courts have held that an attorney\'s duty to verify all citations is non-delegable…',
-}
+```yaml
+- id: E3                       # unique. E# public, D# deck, W# win/loss, P# panel…
+  tier: 3                      # 1 panel · 2 DISCO internal · 3 public · 4 our deck
+  source: Norton Rose Fulbright — "AI in litigation: Gen AI sanctions in 2026"
+  date: "2026"                 # shown in the UI; undated if genuinely unknown
+  url: https://…               # or null — renders as a clickable citation
+  kind: paraphrase             # verbatim | paraphrase | synthesis
+  verified: false              # false ⇒ shows "unverified figure", persona hedges it
+  topics: [verification, ai-risk, delegation]
+  personas: [steven, jose, bo, tanner]    # who can see it
+  text: |
+    Courts have held that an attorney's duty to verify all citations is
+    non-delegable, regardless of the source of the citation.
 ```
+
+The `text` block scalar means apostrophes, quotes and line breaks need no escaping.
 
 Three fields do the load-bearing work:
 
@@ -188,30 +202,66 @@ over a store, which is Part B work.
 
 ## Adding new evidence
 
-The common case — a new source. One file, no rebuild:
+The whole loop, for someone who has never touched this repo:
 
-1. Append an object to `CORPUS` in `api/_corpus.js` using the shape above.
-2. Give it an unused `id`. Prefixes are conventions, not enforced: `E#` external, `D#` deck.
-   For new tiers, start a new prefix so provenance is legible at a glance — e.g. `W#` win/loss,
-   `C#` partner-attended calls, `S#` support/CS, `P#` panel interviews.
-3. Tag `personas` deliberately. This is the only thing controlling who sees it.
+```bash
+git checkout -b evidence/win-loss-batch
+# edit data/corpus.yaml — copy the template in its header comment
+npm run corpus:build      # validates, then regenerates the module
+npm test                  # corpus + validator + endpoint contract
+git add data/corpus.yaml api/_corpus.generated.js
+git commit && git push    # open a PR; CI runs the same checks
+```
+
+Merging deploys. Nothing else to update — the sidebar counts read from the endpoint.
+
+1. Append an entry to `data/corpus.yaml` using the template in its header comment.
+2. Give it an unused `id`. Prefix by provenance so it is legible at a glance: `E#` public,
+   `D#` our deck, `W#` win/loss, `C#` partner-attended calls, `S#` support/CS, `P#` panel.
+3. Tag `personas` deliberately — this is the only thing controlling who sees it. Any of the
+   eight cast members in `ROSTER` is valid; the five without dossiers are inert for now, which
+   the build reports as a note.
 4. Set `verified` honestly. `true` means someone read the primary source.
-5. `npm run test:persona`, then commit and push. The push deploys; there is no build step and
-   the sidebar counts update themselves from the endpoint.
+5. `npm run corpus:build`, then `npm test`. **Commit the generated file alongside the YAML** —
+   CI fails if they disagree, which is what stops a half-applied change reaching the demo.
+
+### What the validator catches
+
+It errors — not warns — on the mistakes that would otherwise fail *silently*: a misspelled
+persona slug (the entry would become invisible to everyone), a typo'd field name (the value
+would be ignored), a duplicate id (citations are looked up by id), a missing required field, an
+out-of-range `tier` or `kind`, `verified` quoted as a string, a non-HTTPS url, and text too short
+to be evidence. It warns on judgement calls: an oversized `text`, a missing date, tier 3 with no
+url to cite, and `kind: verbatim` on something unverified — a quotation nobody has checked being
+the riskiest thing in the corpus.
+
+Messages name the entry and say what to do, so a failure is fixable without reading the script.
+`scripts/_validator.test.mjs` proves each of those rejections actually fires.
 
 **Paraphrase, don't dump.** Entries are read by a model inside a prompt, so one tight paragraph
 of the finding beats a page of raw transcript. Set `kind: 'verbatim'` and quote exactly only when
 the exact words matter — those are the entries that can be quoted back.
 
-**Adding a whole tier** (say DISCO's win/loss library) needs nothing structural: same array,
+**Adding a whole tier** (say DISCO's win/loss library) needs nothing structural: same file,
 `tier: 2`, a `W#` prefix, and the tier already renders. Two copy changes make it land properly —
 the tier list in `persona/index.html` still says "not in this build", and the contract in
 `api/persona.js` asserts "There is no tier A evidence in this build."
 
 **Adding a persona** is a data change in three places: a `CODICES` entry in `api/_codices.js`
 (plus `PANEL` if they should join panel mode), a `PERSONAS` entry in `persona/app.js`, and a
-button in `persona/index.html`. Then tag existing evidence with the new slug so they can see it,
-and drop a portrait at `assets/persona-<slug>-portrait.png`. No endpoint changes.
+button in `persona/index.html`. If they are not one of the eight already in `ROSTER`, add them
+there too or the validator will reject evidence tagged for them. Then tag existing evidence with
+the new slug, and drop a portrait at `assets/persona-<slug>-portrait.png`. No endpoint changes.
+
+### Running the checks
+
+| Command | What it does |
+|---|---|
+| `npm run corpus:build` | Validate the YAML and regenerate the module. Run after every edit |
+| `npm run corpus:check` | Validate, and fail if the generated file is stale. What CI runs |
+| `npm test` | All three suites: corpus, validator behaviour, endpoint contract |
+
+None of them need an API key or a network connection.
 
 ## Deliberately not built
 

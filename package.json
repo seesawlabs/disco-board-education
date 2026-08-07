@@ -7,7 +7,13 @@
     "@anthropic-ai/sdk": "^0.71.0"
   },
   "scripts": {
+    "corpus:build": "node scripts/corpus.mjs build",
+    "corpus:check": "node scripts/corpus.mjs check",
+    "test": "npm run corpus:check && node scripts/_validator.test.mjs && node api/_smoke.test.mjs",
     "test:persona": "node api/_smoke.test.mjs",
     "dev": "vercel dev"
+  },
+  "devDependencies": {
+    "yaml": "^2.9.0"
   }
 }

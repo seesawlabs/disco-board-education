@@ -1,0 +1,29 @@
+name: checks
+
+# Runs on every pull request so a malformed corpus entry fails review rather
+# than deploying. Vercel builds previews independently of this workflow.
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+
+      # Validates data/corpus.yaml and fails if _corpus.generated.js is stale.
+      - name: Corpus
+        run: npm run corpus:check
+
+      - name: Validator behaviour
+        run: node scripts/_validator.test.mjs
+
+      - name: Endpoint contract
+        run: node api/_smoke.test.mjs

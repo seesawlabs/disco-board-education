@@ -1,0 +1,524 @@
+// GENERATED FILE — DO NOT EDIT.
+// Source: data/corpus.yaml · regenerate with: npm run corpus:build
+// 26 entries.
+
+export const CORPUS = [
+  {
+    "id": "E1",
+    "tier": 3,
+    "source": "Norton Rose Fulbright — \"AI in litigation: update on Gen AI sanctions in 2026\"",
+    "date": "2026",
+    "url": "https://www.nortonrosefulbright.com/en-us/knowledge/publications/792d8bf3/ai-in-litigation-update-on-gen-ai-sanctions-in-2026",
+    "kind": "paraphrase",
+    "verified": false,
+    "topics": [
+      "ai-risk",
+      "sanctions",
+      "verification",
+      "drafting"
+    ],
+    "personas": [
+      "steven",
+      "jose",
+      "bill"
+    ],
+    "text": "Six significant court decisions on Gen-AI hallucinations issued between February and April 2026, including Fletcher v. Experian, Whiting v. City of Athens, United States v. Farris, and Gamez v. County of Fresno."
+  },
+  {
+    "id": "E2",
+    "tier": 3,
+    "source": "Norton Rose Fulbright — 2026 sanctions update (Sixth Circuit)",
+    "date": "2026-03",
+    "url": "https://www.nortonrosefulbright.com/en-us/knowledge/publications/792d8bf3/ai-in-litigation-update-on-gen-ai-sanctions-in-2026",
+    "kind": "paraphrase",
+    "verified": false,
+    "topics": [
+      "ai-risk",
+      "sanctions",
+      "drafting"
+    ],
+    "personas": [
+      "steven",
+      "jose"
+    ],
+    "text": "A Sixth Circuit panel sanctioned two attorneys over briefs containing more than two dozen fabricated citations: $15,000 each to the court registry, reimbursement of the opposing party's full appellate fees across three appeals, double costs, and a disciplinary referral."
+  },
+  {
+    "id": "E3",
+    "tier": 3,
+    "source": "Norton Rose Fulbright — 2026 sanctions update (non-delegable duty)",
+    "date": "2026",
+    "url": "https://www.nortonrosefulbright.com/en-us/knowledge/publications/792d8bf3/ai-in-litigation-update-on-gen-ai-sanctions-in-2026",
+    "kind": "paraphrase",
+    "verified": false,
+    "topics": [
+      "verification",
+      "ai-risk",
+      "delegation"
+    ],
+    "personas": [
+      "steven",
+      "jose",
+      "bo",
+      "tanner"
+    ],
+    "text": "Courts have held that an attorney's duty to verify all citations is non-delegable, regardless of the source of the citation."
+  },
+  {
+    "id": "E4",
+    "tier": 3,
+    "source": "Norton Rose Fulbright — 2026 sanctions update (Fletcher v. Experian)",
+    "date": "2026",
+    "url": "https://www.nortonrosefulbright.com/en-us/knowledge/publications/792d8bf3/ai-in-litigation-update-on-gen-ai-sanctions-in-2026",
+    "kind": "paraphrase",
+    "verified": false,
+    "topics": [
+      "ai-risk",
+      "sanctions",
+      "candour"
+    ],
+    "personas": [
+      "steven",
+      "jose"
+    ],
+    "text": "In Fletcher v. Experian, a $2,500 sanction followed a Fifth Circuit reply brief with 16 fabricated quotations, aggravated by counsel misleading the court about her use of Gen AI."
+  },
+  {
+    "id": "E5",
+    "tier": 3,
+    "source": "Norton Rose Fulbright — 2026 sanctions update (Sullivan & Cromwell)",
+    "date": "2026-04",
+    "url": "https://www.nortonrosefulbright.com/en-us/knowledge/publications/792d8bf3/ai-in-litigation-update-on-gen-ai-sanctions-in-2026",
+    "kind": "paraphrase",
+    "verified": false,
+    "topics": [
+      "ai-risk",
+      "sanctions",
+      "reputation"
+    ],
+    "personas": [
+      "steven",
+      "jose",
+      "bill"
+    ],
+    "text": "Sullivan & Cromwell apologised to Chief Judge Martin Glenn in April 2026 over an emergency motion containing roughly 28 erroneous citations in the Prince Global Holdings Chapter 15 proceeding."
+  },
+  {
+    "id": "E6",
+    "tier": 3,
+    "source": "Charlotin AI-hallucination decision database, via GC AI sanctions tracker",
+    "date": "2026-05",
+    "url": "https://gc.ai/blog/ai-hallucination-legal-cases",
+    "kind": "paraphrase",
+    "verified": false,
+    "topics": [
+      "ai-risk",
+      "sanctions"
+    ],
+    "personas": [
+      "steven",
+      "jose",
+      "bill"
+    ],
+    "text": "A public database tracks roughly 1,490 decisions worldwide — more than 1,000 in the United States as of May 2026 — where a party relied on AI-hallucinated material and a court responded."
+  },
+  {
+    "id": "E7",
+    "tier": 3,
+    "source": "8am Legal Industry Report 2026, via LawSites",
+    "date": "2026-03",
+    "url": "https://www.lawnext.com/2026/03/ai-adoption-among-legal-professionals-has-more-than-doubled-in-a-year-new-8am-report-finds-but-firms-lag-far-behind-individual-practitioners.html",
+    "kind": "paraphrase",
+    "verified": false,
+    "topics": [
+      "ai-adoption",
+      "shadow-it",
+      "tooling"
+    ],
+    "personas": [
+      "steven",
+      "bo",
+      "tanner",
+      "bill"
+    ],
+    "text": "Individual adoption far outpaces institutional adoption: roughly 69% of legal professionals report personally using generative AI tools for work, while only about 30% of firms have embedded it into regular practice (78% have engaged with it in some form)."
+  },
+  {
+    "id": "E8",
+    "tier": 3,
+    "source": "8am Legal Industry Report 2026, via ABA Law Practice",
+    "date": "2026-03",
+    "url": "https://www.americanbar.org/groups/law_practice/resources/law-practice-magazine/2026/march-april-2026/8am-legal-industry-report/",
+    "kind": "paraphrase",
+    "verified": false,
+    "topics": [
+      "ai-adoption",
+      "training",
+      "governance"
+    ],
+    "personas": [
+      "steven",
+      "bo",
+      "tanner",
+      "bill"
+    ],
+    "text": "More than half of respondents (54%) say their firm has provided no training on responsible use of generative AI and has no current plans to do so; most organisations lack a comprehensive AI use policy."
+  },
+  {
+    "id": "E9",
+    "tier": 3,
+    "source": "Filevine — 2026 Legal AI Trust Index",
+    "date": "2026",
+    "url": "https://www.filevine.com/guides/ai-trust-index-survey-report/",
+    "kind": "paraphrase",
+    "verified": false,
+    "topics": [
+      "ai-adoption",
+      "trust",
+      "privilege",
+      "security"
+    ],
+    "personas": [
+      "steven",
+      "jose",
+      "bill",
+      "amanda"
+    ],
+    "text": "The leading blockers to AI adoption are data security (46%), ethical issues (42%), privilege concerns (39%), and lack of trust in results (39%). 43% report greater trust in legal-specific AI tools than in general-purpose alternatives."
+  },
+  {
+    "id": "E10",
+    "tier": 3,
+    "source": "Wolters Kluwer — Future Ready Lawyer 2026",
+    "date": "2026",
+    "url": "https://www.wolterskluwer.com/en/expert-insights/legal-industry-leaders-explore-earning-and-maintaining-trust-in-ai-driven-world",
+    "kind": "paraphrase",
+    "verified": false,
+    "topics": [
+      "trust",
+      "verification",
+      "ai-adoption"
+    ],
+    "personas": [
+      "steven",
+      "jose"
+    ],
+    "text": "Lawyers are comfortable experimenting with AI but still verify outputs; verification shows up as documenting AI use in research and drafting, escalating uncertainty early, and training teams to test outputs rather than accept them."
+  },
+  {
+    "id": "E11",
+    "tier": 3,
+    "source": "Logikcull — \"Review smarter, not harder: workflow optimization for lean legal teams\"",
+    "date": "undated",
+    "url": "https://www.logikcull.com/blog/review-smarter-not-harder-workflow-optimization-strategies-for-lean-legal-teams",
+    "kind": "paraphrase",
+    "verified": false,
+    "topics": [
+      "privilege",
+      "workflow",
+      "time-sink",
+      "ediscovery"
+    ],
+    "personas": [
+      "steven",
+      "bo",
+      "tanner",
+      "erin"
+    ],
+    "text": "Privilege review is where lean teams lose the most time. Manual privilege logging — documenting the basis for withholding each document — is tedious, inconsistent, and error-prone under deadline pressure. Caseloads rise annually while headcount does not."
+  },
+  {
+    "id": "E12",
+    "tier": 3,
+    "source": "Avalon / Complete Legal — eDiscovery workflow commentary",
+    "date": "undated",
+    "url": "https://teamavalon.com/avalon-blog/how-to-speed-up-ediscovery-timelines",
+    "kind": "paraphrase",
+    "verified": false,
+    "topics": [
+      "workflow",
+      "coordination",
+      "ediscovery"
+    ],
+    "personas": [
+      "steven",
+      "erin",
+      "vishal"
+    ],
+    "text": "Most eDiscovery delay is not one major failure. It accumulates from small points of friction that compound across the matter, particularly at handoffs between legal ops, outside counsel, service providers, and review teams."
+  },
+  {
+    "id": "E13",
+    "tier": 3,
+    "source": "JDJournal — \"Is the BigLaw Pyramid Model Headed for an AI Transformation?\"",
+    "date": "2025-12",
+    "url": "https://www.jdjournal.com/2025/12/11/is-the-biglaw-pyramid-model-headed-for-an-ai-transformation/",
+    "kind": "paraphrase",
+    "verified": false,
+    "topics": [
+      "economics",
+      "leverage",
+      "billing"
+    ],
+    "personas": [
+      "steven",
+      "jose",
+      "bo",
+      "tanner"
+    ],
+    "text": "For decades firms relied on leverage: partners supervising large associate groups, with profit generated through billable hours. The pyramid is under pressure because the billable-hour model depends on juniors logging time on basic tasks, and AI reduces the need for those hours."
+  },
+  {
+    "id": "E14",
+    "tier": 3,
+    "source": "JDJournal — \"Big Law Faces a Painful Pricing Reckoning\"",
+    "date": "2026-05",
+    "url": "https://www.jdjournal.com/2026/05/12/big-law-faces-a-painful-pricing-reckoning/",
+    "kind": "paraphrase",
+    "verified": false,
+    "topics": [
+      "economics",
+      "pricing",
+      "billing"
+    ],
+    "personas": [
+      "steven",
+      "jose",
+      "amanda"
+    ],
+    "text": "Clients increasingly resist paying for large associate teams and want experienced lawyers on critical tasks directly. Leaner teams are more common, and fixed fees, subscriptions, portfolio pricing, and performance-based arrangements are spreading as responses to pricing pressure."
+  },
+  {
+    "id": "E15",
+    "tier": 3,
+    "source": "LawFuel — \"From 40 Hours To 4: Is AI Forcing A $200 Billion Rewrite Of The BigLaw Billable Hour?\"",
+    "date": "2026",
+    "url": "https://www.lawfuel.com/40-hours-to-4-ai-billable-hour-future-biglaw/",
+    "kind": "paraphrase",
+    "verified": false,
+    "topics": [
+      "economics",
+      "billing",
+      "efficiency"
+    ],
+    "personas": [
+      "steven",
+      "jose"
+    ],
+    "text": "Under hourly billing, compressing a 40-hour task to 4 hours removes billable value rather than creating margin. The economics of AI-driven efficiency depend entirely on the fee arrangement."
+  },
+  {
+    "id": "E16",
+    "tier": 3,
+    "source": "Bloomberg Law — \"Law Firm Tech Budgets Drive the Build Versus Buy AI Debate\"",
+    "date": "2026",
+    "url": "https://news.bloomberglaw.com/artificial-intelligence/law-firm-tech-budgets-drive-the-build-versus-buy-ai-debate",
+    "kind": "paraphrase",
+    "verified": false,
+    "topics": [
+      "procurement",
+      "build-vs-buy",
+      "security"
+    ],
+    "personas": [
+      "bill",
+      "steven"
+    ],
+    "text": "Security is now a decisive differentiator in legal-tech selection. Some chief innovation officers at large firms have built internal AI platforms integrating proprietary workflows while using subscription legal-AI platforms as a bridge — innovation officers increasingly own the build-versus-buy call."
+  },
+  {
+    "id": "E17",
+    "tier": 3,
+    "source": "Wolters Kluwer — \"The Future of Legal Operations: Key Trends for 2026\"",
+    "date": "2026",
+    "url": "https://www.wolterskluwer.com/en/expert-insights/what-is-the-future-of-legal-operations-in-2026",
+    "kind": "paraphrase",
+    "verified": false,
+    "topics": [
+      "procurement",
+      "pricing",
+      "budget-authority"
+    ],
+    "personas": [
+      "steven",
+      "bill",
+      "amanda"
+    ],
+    "text": "Pricing discussions have historically routed through relationship partners who may lack deep financial-modelling expertise. A significant 2026 shift is engaging firm pricing professionals earlier and more directly in deals."
+  },
+  {
+    "id": "E18",
+    "tier": 3,
+    "source": "LeanLaw — \"The Path to Partnership: Compensation at Every Stage\"",
+    "date": "undated",
+    "url": "https://www.leanlaw.co/blog/the-path-to-partnership-compensation-at-every-stage/",
+    "kind": "paraphrase",
+    "verified": false,
+    "topics": [
+      "economics",
+      "compensation",
+      "incentives"
+    ],
+    "personas": [
+      "steven",
+      "jose"
+    ],
+    "text": "Junior partner compensation mixes billable production, originations, and firm profitability. The transition off a pure salary means personal exposure to matter economics for the first time."
+  },
+  {
+    "id": "D1",
+    "tier": 4,
+    "source": "DISCO Board Education deck, slide 14 (Persona — Steven)",
+    "date": "2026-08",
+    "url": null,
+    "kind": "synthesis",
+    "verified": true,
+    "topics": [
+      "role",
+      "tooling",
+      "buying"
+    ],
+    "personas": [
+      "steven"
+    ],
+    "text": "Junior partner at a top AmLaw firm. Tags: QC + strategy, technically capable, career focused. Quote: \"I make Jose look good.\" Daily tools: DISCO, MS Word, iManage, Relativity. Not the buyer; influences the decision through daily execution pain."
+  },
+  {
+    "id": "D2",
+    "tier": 4,
+    "source": "DISCO Board Education deck, speaker notes 2.6 (Steven)",
+    "date": "2026-08",
+    "url": null,
+    "kind": "synthesis",
+    "verified": true,
+    "topics": [
+      "role",
+      "workflow",
+      "coordination",
+      "budget-authority"
+    ],
+    "personas": [
+      "steven"
+    ],
+    "text": "Steven sits at the intersection of strategy and execution — setting discovery scope, overseeing associate work product, owning the matter budget. He is who Jose turns to for a current read on the case and who juniors turn to for direction. When a client asks a question he pulls the answer together across associates, paralegals and drafts, then synthesises it for Jose or the client. If something is missed or contradicts what Jose already told the client, it surfaces on his watch — he is the single point of failure for keeping the picture whole. He values a defensible answer without a long chain between question and response; the more the stack fragments, the more his day fills with coordination instead of judgment. For adoption he matters more than any other practitioner: he feels the cost daily and manages the budget."
+  },
+  {
+    "id": "D3",
+    "tier": 4,
+    "source": "DISCO Board Education deck, speaker notes 3.1 (AI by persona — Steven)",
+    "date": "2026-08",
+    "url": null,
+    "kind": "synthesis",
+    "verified": true,
+    "topics": [
+      "ai-adoption",
+      "ai-risk",
+      "trust"
+    ],
+    "personas": [
+      "steven"
+    ],
+    "text": "AI gives Steven a faster starting point for status updates, but he owns the error if the synthesis is wrong — so a tool that is fast but occasionally inaccurate shifts more risk onto him, not less. Hallucinations are reputationally damaging."
+  },
+  {
+    "id": "D4",
+    "tier": 4,
+    "source": "DISCO Board Education deck, speaker notes 3.3 (The trust threshold)",
+    "date": "2026-08",
+    "url": null,
+    "kind": "synthesis",
+    "verified": true,
+    "topics": [
+      "trust",
+      "verification",
+      "ai-adoption",
+      "drafting"
+    ],
+    "personas": [
+      "steven",
+      "jose",
+      "bo",
+      "bill"
+    ],
+    "text": "Verifiability is the dividing line for AI adoption. Adoption has happened where output traces back to identifiable source documents an attorney can check: document review and triage, timeline generation, witness and entity background research, case summarisation. It has not crossed into autonomous drafting of high-stakes filings, strategic case recommendations, settlement analysis, or anything a partner signs their name to — output that is judgment rather than retrieval, harder to verify, and consequential when wrong. The line moves as tools make output traceable and auditable. Platforms earn the next column by making output verifiable, not by leading with the most ambitious capability."
+  },
+  {
+    "id": "D5",
+    "tier": 4,
+    "source": "DISCO Board Education deck, speaker notes 2.11 (Buyers vs users)",
+    "date": "2026-08",
+    "url": null,
+    "kind": "synthesis",
+    "verified": true,
+    "topics": [
+      "procurement",
+      "buying",
+      "adoption"
+    ],
+    "personas": [
+      "steven",
+      "jose",
+      "bill",
+      "amanda"
+    ],
+    "text": "The people making purchasing decisions are not the people doing the daily litigation work. Bill evaluates platforms on security, compliance, integration and ROI. Amanda evaluates outside-counsel tools on visibility, cost predictability and risk. Tanner, Bo and Steven work with whatever the firm has already deployed. A tool can dramatically improve daily work and still never get deployed unless it satisfies Bill's criteria — bottom-up enthusiasm does not override top-down procurement."
+  },
+  {
+    "id": "D6",
+    "tier": 4,
+    "source": "DISCO Board Education deck, slide 13 + notes 2.5 (Persona — Jose)",
+    "date": "2026-08",
+    "url": null,
+    "kind": "synthesis",
+    "verified": true,
+    "topics": [
+      "role",
+      "buying",
+      "trust"
+    ],
+    "personas": [
+      "jose"
+    ],
+    "text": "Senior relationship partner, $1,800–2,200/hr, high stakes, reputation first. Quote: \"I need to walk into that client meeting knowing every fact cold.\" Uses MS Word, Outlook, Westlaw; reviews only, rarely hands-on in the platform. Not the buyer, but his endorsement unlocks firm-wide adoption. His work is business development, high-level synthesis and decision-making. He expects accuracy and will not back a tool that introduces new risk into a process that already works. His fear is leaning on a summary that is incorrect and being surprised in front of the client. Speed is worth nothing if he cannot fully trust it."
+  },
+  {
+    "id": "D7",
+    "tier": 4,
+    "source": "DISCO Board Education deck, slide 12 + notes 2.4 (Persona — Bill)",
+    "date": "2026-08",
+    "url": null,
+    "kind": "synthesis",
+    "verified": true,
+    "topics": [
+      "role",
+      "procurement",
+      "security",
+      "build-vs-buy"
+    ],
+    "personas": [
+      "bill"
+    ],
+    "text": "Technology operations lead at the firm. Not assigned to any individual matter but controls what technology the firm buys and deploys — the buyer on the firm side. Evaluates on security, compliance, integration and ROI. Every new AI vendor is another security surface and compliance question; in a build-versus-buy moment, committing the firm's budget and credibility to the wrong long-term platform is costly to unwind. Kirkland & Ellis committing roughly $500 million (about $100 million in 2026) to build a proprietary AI platform rather than license third-party tools sharpens that fear."
+  },
+  {
+    "id": "D8",
+    "tier": 4,
+    "source": "DISCO Board Education deck, speaker notes 3.2 (The insourcing movement)",
+    "date": "2026-08",
+    "url": null,
+    "kind": "synthesis",
+    "verified": true,
+    "topics": [
+      "economics",
+      "insourcing",
+      "market"
+    ],
+    "personas": [
+      "steven",
+      "jose",
+      "amanda",
+      "bill"
+    ],
+    "text": "Litigation work is moving in-house on both sides. At firms the driver is margin: AI-assisted review lets smaller teams handle populations that once required large managed-review staffs or outsourcing. On the client side the driver is cost control and visibility, with legal departments under sustained CFO pressure to reduce outside-counsel spend. This does not mean corporate legal departments are replacing outside counsel for complex, high-stakes litigation — what changes is the distribution of work across the lifecycle."
+  }
+];

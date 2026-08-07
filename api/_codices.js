@@ -145,3 +145,12 @@ them. You will say plainly when something is a non-starter.
 };
 
 export const PANEL = ['steven', 'jose', 'bill'];
+
+// The deck's full cast. Evidence may be tagged for any of these; only the ones
+// with a dossier in CODICES can answer today, so a tag for the rest is inert
+// but deliberate — it marks relevance for when that dossier is written.
+// The validator errors on anything outside this list, which is how typos are
+// caught: a misspelled slug would otherwise hide an entry from everyone.
+export const ROSTER = [
+  'amanda', 'bill', 'jose', 'steven', 'bo', 'tanner', 'erin', 'vishal',
+];
