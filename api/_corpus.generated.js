@@ -1,6 +1,6 @@
 // GENERATED FILE — DO NOT EDIT.
 // Source: data/corpus.yaml · regenerate with: npm run corpus:build
-// 26 entries.
+// 29 entries.
 
 export const CORPUS = [
   {
@@ -364,6 +364,58 @@ export const CORPUS = [
       "jose"
     ],
     "text": "Junior partner compensation mixes billable production, originations, and firm profitability. The transition off a pure salary means personal exposure to matter economics for the first time."
+  },
+  {
+    "id": "E19",
+    "tier": 3,
+    "source": "Amy Van Gelder (Skadden) — Reuters Practical Law \"Checking In\" interview",
+    "date": "2026-04",
+    "url": "https://www.reuters.com/practical-law-the-journal/legalindustry/checking-2026-04-01/",
+    "kind": "verbatim",
+    "verified": true,
+    "topics": [
+      "ai-adoption",
+      "client-expectations"
+    ],
+    "personas": [
+      "jose"
+    ],
+    "text": "\"AI is set to play an increasingly prominent role in the legal field by\nstreamlining some of the more labor-intensive aspects of the job,\nincluding document review, analysis of voluminous data, and creating\nfirst drafts of some legal documents. Clients are now expecting\nattorneys to properly use AI to maximize efficiencies, so attorneys\nwill be well-served to become adept with AI's capabilities and\nlimitations. While AI will not replace the nuanced judgment of\nexperienced attorneys, it will enhance productivity and performance\nand allow attorneys to focus on higher-value strategic work.\""
+  },
+  {
+    "id": "E20",
+    "tier": 3,
+    "source": "Amy Van Gelder (Skadden) — Reuters Practical Law \"Checking In\" interview",
+    "date": "2026-04",
+    "url": "https://www.reuters.com/practical-law-the-journal/legalindustry/checking-2026-04-01/",
+    "kind": "verbatim",
+    "verified": true,
+    "topics": [
+      "litigation-challenges",
+      "ediscovery",
+      "cost-management"
+    ],
+    "personas": [
+      "jose"
+    ],
+    "text": "\"A significant challenge litigators face is managing the increasing\ncomplexity of cases while meeting client expectations for efficiency\nand cost-effectiveness. Handling complex electronic discovery poses\nespecially unique challenges. The need to identify, preserve, collect,\nreview, and produce large volumes of different and evolving varieties\nof data requires litigators to stay ahead of developments in both the\nlaw and technology. Managing discovery costs while ensuring compliance\nwith legal obligations also requires careful planning and project\nmanagement.\""
+  },
+  {
+    "id": "E21",
+    "tier": 3,
+    "source": "Amy Van Gelder (Skadden) — Reuters Practical Law \"Checking In\" interview",
+    "date": "2026-04",
+    "url": "https://www.reuters.com/practical-law-the-journal/legalindustry/checking-2026-04-01/",
+    "kind": "verbatim",
+    "verified": true,
+    "topics": [
+      "client-relationships",
+      "business-development"
+    ],
+    "personas": [
+      "jose"
+    ],
+    "text": "\"To remain competitive, I focus on building strong relationships by\ndelivering exceptional service and anticipating client needs. You can\ndemonstrate a deep understanding of clients' businesses by proactively\nidentifying and raising potential issues before they arise, enabling\nthem to avoid legal pitfalls, capitalize on opportunities, and save\ntime and resources. This approach builds trust and positions you as a\nvaluable strategic partner.\""
   },
   {
     "id": "D1",

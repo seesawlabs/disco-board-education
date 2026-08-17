@@ -341,6 +341,63 @@
     - jose
   text: |-
     Junior partner compensation mixes billable production, originations, and firm profitability. The transition off a pure salary means personal exposure to matter economics for the first time.
+- id: E19
+  tier: 3
+  source: Amy Van Gelder (Skadden) — Reuters Practical Law "Checking In" interview
+  date: "2026-04"
+  url: https://www.reuters.com/practical-law-the-journal/legalindustry/checking-2026-04-01/
+  kind: verbatim
+  verified: true
+  topics: [ai-adoption, client-expectations]
+  personas: [jose]
+  text: |-
+    "AI is set to play an increasingly prominent role in the legal field by
+    streamlining some of the more labor-intensive aspects of the job,
+    including document review, analysis of voluminous data, and creating
+    first drafts of some legal documents. Clients are now expecting
+    attorneys to properly use AI to maximize efficiencies, so attorneys
+    will be well-served to become adept with AI's capabilities and
+    limitations. While AI will not replace the nuanced judgment of
+    experienced attorneys, it will enhance productivity and performance
+    and allow attorneys to focus on higher-value strategic work."
+
+- id: E20
+  tier: 3
+  source: Amy Van Gelder (Skadden) — Reuters Practical Law "Checking In" interview
+  date: "2026-04"
+  url: https://www.reuters.com/practical-law-the-journal/legalindustry/checking-2026-04-01/
+  kind: verbatim
+  verified: true
+  topics: [litigation-challenges, ediscovery, cost-management]
+  personas: [jose]
+  text: |-
+    "A significant challenge litigators face is managing the increasing
+    complexity of cases while meeting client expectations for efficiency
+    and cost-effectiveness. Handling complex electronic discovery poses
+    especially unique challenges. The need to identify, preserve, collect,
+    review, and produce large volumes of different and evolving varieties
+    of data requires litigators to stay ahead of developments in both the
+    law and technology. Managing discovery costs while ensuring compliance
+    with legal obligations also requires careful planning and project
+    management."
+
+- id: E21
+  tier: 3
+  source: Amy Van Gelder (Skadden) — Reuters Practical Law "Checking In" interview
+  date: "2026-04"
+  url: https://www.reuters.com/practical-law-the-journal/legalindustry/checking-2026-04-01/
+  kind: verbatim
+  verified: true
+  topics: [client-relationships, business-development]
+  personas: [jose]
+  text: |-
+    "To remain competitive, I focus on building strong relationships by
+    delivering exceptional service and anticipating client needs. You can
+    demonstrate a deep understanding of clients' businesses by proactively
+    identifying and raising potential issues before they arise, enabling
+    them to avoid legal pitfalls, capitalize on opportunities, and save
+    time and resources. This approach builds trust and positions you as a
+    valuable strategic partner."
 - id: D1
   tier: 4
   source: DISCO Board Education deck, slide 14 (Persona — Steven)
