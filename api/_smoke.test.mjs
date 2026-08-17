@@ -199,10 +199,10 @@ res = mockRes();
 await handler({ method: 'GET' }, res);
 check('GET 200', res._status === 200, JSON.stringify(res._json));
 const st = res._json.corpus;
-check('total reported', st.total === 29, st.total);
-check('tier breakdown', st.by_tier[3] === 21 && st.by_tier[4] === 8, JSON.stringify(st.by_tier));
+check('total reported', st.total === 35, st.total);
+check('tier breakdown', st.by_tier[3] === 27 && st.by_tier[4] === 8, JSON.stringify(st.by_tier));
 check('unverified count', st.unverified === 18, st.unverified);
-check('per-persona counts', st.per_persona.steven === 24, JSON.stringify(st.per_persona));
+check('per-persona counts', st.per_persona.steven === 26, JSON.stringify(st.per_persona));
 
 res = mockRes();
 await handler({ method: 'PUT' }, res);

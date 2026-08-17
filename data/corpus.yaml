@@ -398,6 +398,102 @@
     them to avoid legal pitfalls, capitalize on opportunities, and save
     time and resources. This approach builds trust and positions you as a
     valuable strategic partner."
+- id: E22
+  tier: 3
+  source: Clinton Sanko (Baker Donelson, eDiscovery Officer) — Logikcull vendor case study
+  date: "2026"
+  url: https://www.logikcull.com/case-studies/baker-donelson
+  kind: verbatim
+  verified: true
+  topics: [procurement, workflow-efficiency, team-autonomy]
+  personas: [bill]
+  text: |-
+    "Our goal was to further enable our teams to work nimbly and
+    cost-effectively, so that our legal professionals could get closer to
+    their data faster, all while allowing the firm to free up eDiscovery
+    attorneys for the most demanding matters. Not only did we accomplish
+    that, the results have been beyond our initial expectations and any
+    projections we had. The time to load and access data is incredibly
+    fast and efficient, and the trial teams are almost entirely
+    self-sufficient. That means we can focus our eDiscovery team on the
+    more complex matters that benefit from a deeper eDiscovery lawyering
+    bench." — Clinton Sanko, eDiscovery Officer, Baker Donelson
+
+- id: E23
+  tier: 3
+  source: Clinton Sanko (Baker Donelson, eDiscovery Officer) — Logikcull vendor case study
+  date: "2026"
+  url: https://www.logikcull.com/case-studies/baker-donelson
+  kind: verbatim
+  verified: true
+  topics: [procurement, vendor-evaluation]
+  personas: [bill]
+  text: |-
+    "The majority of eDiscovery projects are actually fairly small and not
+    particularly difficult to manage. The large projects, which are in the
+    minority, get all the attention of the software developers and legal
+    news. Logikcull fills a much needed gap in eDiscovery software and
+    services, allowing the trial teams to self-manage these smaller
+    matters." — Clinton Sanko, eDiscovery Officer, Baker Donelson
+
+- id: E24
+  tier: 3
+  source: Bruce Furukawa (Severson & Werson, Technology Partner) — Relativity vendor case study
+  date: "2026"
+  url: https://www.relativity.com/relativity/assets/pdf/SeversonWerson_HowSeversonWersonUsedAnalyticstoCutReviewTimeinHalf.pdf
+  kind: verbatim
+  verified: true
+  topics: [ediscovery, workflow-efficiency, analytics]
+  personas: [steven]
+  text: |-
+    "Like a magnet passing across a desk covered in filings, Relativity
+    picked up similar documents and grouped them. It allowed us to quickly
+    sort out groups of obviously nonresponsive, repetitive documents." —
+    Bruce Furukawa, Technology Partner, Severson & Werson
+
+- id: E25
+  tier: 3
+  source: Bruce Furukawa (Severson & Werson, Technology Partner) — Relativity vendor case study
+  date: "2026"
+  url: https://www.relativity.com/relativity/assets/pdf/SeversonWerson_HowSeversonWersonUsedAnalyticstoCutReviewTimeinHalf.pdf
+  kind: verbatim
+  verified: true
+  topics: [ediscovery, workflow-efficiency, review-prioritization]
+  personas: [steven]
+  text: |-
+    "If e-discovery is like panning for gold, then Relativity let us
+    examine the gold first without sifting through layers upon layers of
+    sand." — Bruce Furukawa, Technology Partner, Severson & Werson
+
+- id: E26
+  tier: 3
+  source: Tom Barnard (Baker Donelson, Shareholder) — Logikcull vendor case study
+  date: "2026"
+  url: https://www.logikcull.com/case-studies/baker-donelson
+  kind: verbatim
+  verified: true
+  topics: [client-value, cost-management]
+  personas: [jose]
+  text: |-
+    "With the cost reduction and time savings we're seeing using this
+    approach for appropriate cases, eDiscovery becomes less of a burden
+    for clients and we can focus on the case merits." — Tom Barnard,
+    Shareholder, Baker Donelson
+
+- id: E27
+  tier: 3
+  source: Tom Barnard (Baker Donelson, Shareholder) — Logikcull vendor case study
+  date: "2026"
+  url: https://www.logikcull.com/case-studies/baker-donelson
+  kind: verbatim
+  verified: true
+  topics: [client-relationships, cost-management]
+  personas: [jose]
+  text: |-
+    "Now, we don't need to have big discussions around budget and
+    timelines. Discovery has become a value-add to the client
+    relationship, instead of a sticking point." — Tom Barnard,
+    Shareholder, Baker Donelson
 - id: D1
   tier: 4
   source: DISCO Board Education deck, slide 14 (Persona — Steven)

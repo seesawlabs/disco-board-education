@@ -1,6 +1,6 @@
 // GENERATED FILE — DO NOT EDIT.
 // Source: data/corpus.yaml · regenerate with: npm run corpus:build
-// 29 entries.
+// 35 entries.
 
 export const CORPUS = [
   {
@@ -416,6 +416,111 @@ export const CORPUS = [
       "jose"
     ],
     "text": "\"To remain competitive, I focus on building strong relationships by\ndelivering exceptional service and anticipating client needs. You can\ndemonstrate a deep understanding of clients' businesses by proactively\nidentifying and raising potential issues before they arise, enabling\nthem to avoid legal pitfalls, capitalize on opportunities, and save\ntime and resources. This approach builds trust and positions you as a\nvaluable strategic partner.\""
+  },
+  {
+    "id": "E22",
+    "tier": 3,
+    "source": "Clinton Sanko (Baker Donelson, eDiscovery Officer) — Logikcull vendor case study",
+    "date": "2026",
+    "url": "https://www.logikcull.com/case-studies/baker-donelson",
+    "kind": "verbatim",
+    "verified": true,
+    "topics": [
+      "procurement",
+      "workflow-efficiency",
+      "team-autonomy"
+    ],
+    "personas": [
+      "bill"
+    ],
+    "text": "\"Our goal was to further enable our teams to work nimbly and\ncost-effectively, so that our legal professionals could get closer to\ntheir data faster, all while allowing the firm to free up eDiscovery\nattorneys for the most demanding matters. Not only did we accomplish\nthat, the results have been beyond our initial expectations and any\nprojections we had. The time to load and access data is incredibly\nfast and efficient, and the trial teams are almost entirely\nself-sufficient. That means we can focus our eDiscovery team on the\nmore complex matters that benefit from a deeper eDiscovery lawyering\nbench.\" — Clinton Sanko, eDiscovery Officer, Baker Donelson"
+  },
+  {
+    "id": "E23",
+    "tier": 3,
+    "source": "Clinton Sanko (Baker Donelson, eDiscovery Officer) — Logikcull vendor case study",
+    "date": "2026",
+    "url": "https://www.logikcull.com/case-studies/baker-donelson",
+    "kind": "verbatim",
+    "verified": true,
+    "topics": [
+      "procurement",
+      "vendor-evaluation"
+    ],
+    "personas": [
+      "bill"
+    ],
+    "text": "\"The majority of eDiscovery projects are actually fairly small and not\nparticularly difficult to manage. The large projects, which are in the\nminority, get all the attention of the software developers and legal\nnews. Logikcull fills a much needed gap in eDiscovery software and\nservices, allowing the trial teams to self-manage these smaller\nmatters.\" — Clinton Sanko, eDiscovery Officer, Baker Donelson"
+  },
+  {
+    "id": "E24",
+    "tier": 3,
+    "source": "Bruce Furukawa (Severson & Werson, Technology Partner) — Relativity vendor case study",
+    "date": "2026",
+    "url": "https://www.relativity.com/relativity/assets/pdf/SeversonWerson_HowSeversonWersonUsedAnalyticstoCutReviewTimeinHalf.pdf",
+    "kind": "verbatim",
+    "verified": true,
+    "topics": [
+      "ediscovery",
+      "workflow-efficiency",
+      "analytics"
+    ],
+    "personas": [
+      "steven"
+    ],
+    "text": "\"Like a magnet passing across a desk covered in filings, Relativity\npicked up similar documents and grouped them. It allowed us to quickly\nsort out groups of obviously nonresponsive, repetitive documents.\" —\nBruce Furukawa, Technology Partner, Severson & Werson"
+  },
+  {
+    "id": "E25",
+    "tier": 3,
+    "source": "Bruce Furukawa (Severson & Werson, Technology Partner) — Relativity vendor case study",
+    "date": "2026",
+    "url": "https://www.relativity.com/relativity/assets/pdf/SeversonWerson_HowSeversonWersonUsedAnalyticstoCutReviewTimeinHalf.pdf",
+    "kind": "verbatim",
+    "verified": true,
+    "topics": [
+      "ediscovery",
+      "workflow-efficiency",
+      "review-prioritization"
+    ],
+    "personas": [
+      "steven"
+    ],
+    "text": "\"If e-discovery is like panning for gold, then Relativity let us\nexamine the gold first without sifting through layers upon layers of\nsand.\" — Bruce Furukawa, Technology Partner, Severson & Werson"
+  },
+  {
+    "id": "E26",
+    "tier": 3,
+    "source": "Tom Barnard (Baker Donelson, Shareholder) — Logikcull vendor case study",
+    "date": "2026",
+    "url": "https://www.logikcull.com/case-studies/baker-donelson",
+    "kind": "verbatim",
+    "verified": true,
+    "topics": [
+      "client-value",
+      "cost-management"
+    ],
+    "personas": [
+      "jose"
+    ],
+    "text": "\"With the cost reduction and time savings we're seeing using this\napproach for appropriate cases, eDiscovery becomes less of a burden\nfor clients and we can focus on the case merits.\" — Tom Barnard,\nShareholder, Baker Donelson"
+  },
+  {
+    "id": "E27",
+    "tier": 3,
+    "source": "Tom Barnard (Baker Donelson, Shareholder) — Logikcull vendor case study",
+    "date": "2026",
+    "url": "https://www.logikcull.com/case-studies/baker-donelson",
+    "kind": "verbatim",
+    "verified": true,
+    "topics": [
+      "client-relationships",
+      "cost-management"
+    ],
+    "personas": [
+      "jose"
+    ],
+    "text": "\"Now, we don't need to have big discussions around budget and\ntimelines. Discovery has become a value-add to the client\nrelationship, instead of a sticking point.\" — Tom Barnard,\nShareholder, Baker Donelson"
   },
   {
     "id": "D1",
